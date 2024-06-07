@@ -1,5 +1,13 @@
+<?php
+require_once "../functions.php";
+
+$syntax = "SELECT * FROM KELAS";
+$datas = query($syntax);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>TutorTap - Home</title>
     <meta charset="utf-8" />
@@ -11,27 +19,30 @@
     <!-- Custom Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
     <!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<<<<<<< HEAD:views/home.html
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link href="../styles/styles.css" rel="stylesheet" />
 </head>
 
 <body class="montserratRegular">
+=======
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+>>>>>>> ef68ffc634f29781cc0074e6a856e6be3e78c64d:views/homeLearner.php
     <div class="navbar w-100 bg-ouryellow ">
         <div class="container-fluid d-flex justify-content-between">
             <div class="input-group w-75">
-                <input type="text" class="form-control" placeholder="Search Classes" aria-label="Recipient's username"
-                    aria-describedby="basic-addon2">
+                <input type="text" class="form-control" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button">Search</button>
                 </div>
@@ -58,8 +69,22 @@
         <h1>Discover Classes</h1>
     </div>
 
-    <div class="container-fluid p-5">
-        <div class="card mb-3">
+    <div class="container-fluid">
+        <div class="row">
+            <?php foreach ($datas as $data) : ?>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
+                        <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
+                        <p class="card-text"><small class="text-muted"><?php echo $data['hargaKelas']; ?></small></p>
+                    </div>
+                    <img class="card-img-bottom" src="../images/20221003_133232.jpg" alt="Card image cap">
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+        <!-- <div class="card mb-3">
             <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">Card title</h5>
@@ -67,19 +92,11 @@
                     This content is a little bit longer.</p>
                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.
-                    This content is a little bit longer.</p>
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-            </div>
-            <img class="card-img-bottom" src="..." alt="Card image cap">
-        </div>
-    </div>
+        </div> -->
+
 
 
 
 </body>
+
 </html>
