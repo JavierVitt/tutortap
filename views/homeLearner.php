@@ -100,8 +100,36 @@ $datas = query($syntax);
         </div> -->
 
 
-
+        <div class="container-fluid bg-ouryellow d-flex justify-content-center">
+        <div class="btn-group w-50 py-5">
+            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
+                <h1>Tutor</h1>
+            </button>
+            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;">
+                <h1>Learner</h1>
+            </button>
+        </div>
+    </div>
 
 </body>
+
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center border-top">
+        <p class="col-md-4 mb-0 text-muted">&copy; 2024 Company, Inc</p>
+
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+
+            <img src="../images/skilltap logo+brand.png" alt="" style="width: 30%; height:30%;">
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+    </footer>
+</div>
 
 </html>
