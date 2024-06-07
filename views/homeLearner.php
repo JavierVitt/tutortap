@@ -62,6 +62,20 @@ $datas = query($syntax);
     </div>
 
     <div class="container-fluid">
+        <div class="row">
+            <?php foreach ($datas as $data) : ?>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
+                        <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
+                        <p class="card-text"><small class="text-muted"><?php echo $data['hargaKelas']; ?></small></p>
+                    </div>
+                    <img class="card-img-bottom" src="../images/20221003_133232.jpg" alt="Card image cap">
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
         <!-- <div class="card mb-3">
             <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
             <div class="card-body">
@@ -72,19 +86,6 @@ $datas = query($syntax);
             </div>
         </div> -->
 
-    </div>
-    <div class="row">
-        <?php foreach ($datas as $data) : ?>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
-                    <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
-                    <p class="card-text"><small class="text-muted"><?php echo $data['hargaKelas']; ?></small></p>
-                </div>
-                <img class="card-img-bottom" src="../images/20221003_133232.jpg" alt="Card image cap">
-            </div>
-        <?php endforeach; ?>
-    </div>
 
 
 
