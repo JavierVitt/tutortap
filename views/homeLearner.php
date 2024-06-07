@@ -62,20 +62,28 @@ $datas = query($syntax);
         </div>
     </div>
 
-    <div class="container-fluid text-center mt-5 ">
-        <h1>Discover Classes</h1>
+    <div class="container-fluid text-center mt-5 montserratBold ">
+        <h1 class="montserratBold pb-3">Discover Classes</h1>
     </div>
 
     <div class="container-fluid">
         <div class="row">
             <?php foreach ($datas as $data) : ?>
-                <div class="card">
+                <div class="card col-6" style="background-color: #E9D7AF">
+                    <img class="card-img-top py-3" src="../images/<?php echo $data['fotoKelas']; ?>" alt="Card image cap">
                     <div class="card-body">
-                        <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
+                        <h5 class="card-title montserratBold py-3" style="font-size:35px"><?php echo $data['namaKelas']; ?></h5>
                         <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
-                        <p class="card-text"><small class="text-muted"><?php echo $data['hargaKelas']; ?></small></p>
+                        <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp. <?php echo $data['hargaKelas']; ?></p>
+
+                        <!-- REVIEW BELUM! -->
+                        <div class="card-text" style="display: flex; align-items: center;">
+                            <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
+                            <span style="margin-left: 10px;">5.0 - 35 reviews</span>
+                        </div>
+
+                        
                     </div>
-                    <img class="card-img-bottom" src="../images/20221003_133232.jpg" alt="Card image cap">
                 </div>
             <?php endforeach; ?>
         </div>
