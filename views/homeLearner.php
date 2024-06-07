@@ -100,7 +100,7 @@ $datas = query($syntax);
         </div> -->
 
 
-        <div class="container-fluid bg-ouryellow d-flex justify-content-center">
+        <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
         <div class="btn-group w-50 py-5">
             <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
                 <h1>Tutor</h1>
