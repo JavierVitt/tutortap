@@ -70,18 +70,21 @@ $complaindatum = query($syntax);
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
                         <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
-                  </div>
+                    </div>
                 </div>
-			    <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Form Pengajuan</h5>
-               				<input type="text" class="form-control" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
-                        <p class="card-text"></p>
-                        <button class="btn btn-outline-secondary" type="button">Submit</button>
-				</div>
-                <?php endforeach; ?>
-			</div>
+            <?php endforeach; ?>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Form Pengajuan</h5>
+                    <input type="text" class="form-control" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
+                    <p class="card-text"></p>
+                    <button class="btn btn-primary position-relative end-0" type="button">Submit</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
+
 </html>
