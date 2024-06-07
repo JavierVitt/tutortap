@@ -5,6 +5,26 @@ $syntax = "SELECT * FROM KELAS";
 $datas = query($syntax);
 $syntaxComplain = "SELECT * FROM KELAS";
 $complaindatum = query($syntax);
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the complaint message from the form data
+    $complainMessage = $_POST['complainMessage'];
+
+    // Get the admin ID from the "Admin" table
+    // This is just an example, replace it with your actual query to get adminId
+    $adminQuery = "SELECT adminId FROM admin LIMIT 1";
+    $adminResult = query($adminQuery);
+    $adminId = $adminResult[0]['adminId'];
+
+    // Insert the new complaint into the "complain" table
+    $query = "INSERT INTO complain (complainMessage, adminId) VALUES (?, ?)";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, 'si', $complainMessage, $adminId);
+    mysqli_stmt_execute($stmt);
+
+    echo "Complaint submitted successfully.";
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,9 +98,11 @@ $complaindatum = query($syntax);
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Form Pengajuan</h5>
-                    <input type="text" class="form-control" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
-                    <p class="card-text"></p>
-                    <button class="btn btn-primary position-relative end-0" type="button">Submit</button>
+                    <form method="post" action="">
+                        <input type="text" class="form-control" name="complainMessage" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
+                        <p class="card-text"></p>
+                        <button class="btn btn-primary position-relative end-0" type="submit">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
