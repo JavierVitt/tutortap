@@ -3,6 +3,8 @@ require_once "../functions.php";
 
 $syntax = "SELECT * FROM KELAS";
 $datas = query($syntax);
+
+$id = $_GET['id'];
 ?>
 
 <!DOCTYPE html>
@@ -102,11 +104,11 @@ $datas = query($syntax);
 
         <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
         <div class="btn-group w-50 py-5">
-            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
+            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $id; ?>'">
                 <h1>Tutor</h1>
             </button>
-            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;">
-                <h1>Learner</h1>
+            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='#'">
+                 <h1>Learner</h1>
             </button>
         </div>
     </div>
