@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="container-fluid text-center mt-5">
-        <h1>Balance Withdrawal</h1>
+        <h1 class="montserratBold">Balance Withdrawal</h1>
     </div>
 
     <div class="container-fluid">
