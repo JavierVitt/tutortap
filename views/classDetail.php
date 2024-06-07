@@ -68,7 +68,7 @@ $datas = query($syntax);
         </div>
 
         <div class="container-fluid text-center mt-5 montserratBold ">
-            <h1 class="montserratBold pb-3">Class Detail</h1>
+            <h1 class="montserratBold pb-3">Class Name</h1>
         </div>
 
         <div class="container-fluid">
@@ -78,9 +78,13 @@ $datas = query($syntax);
                     <img class="card-img-top py-3" src="../images/<?php echo $data['fotoKelas']; ?>"
                         alt="Card image cap">
                     <div class="card-body">
+
+                        <!-- hapus ini nanti -->
                         <h5 class="card-title montserratBold py-3" style="font-size:35px">
                             <?php echo $data['namaKelas']; ?>
                         </h5>
+
+
                         <p class="card-text">
                             <?php echo $data['deskripsiKelas']; ?>
                         </p>
@@ -88,10 +92,38 @@ $datas = query($syntax);
                             <?php echo $data['hargaKelas']; ?>
                         </p>
 
+
                         <!-- REVIEW BELUM! -->
                         <div class="card-text" style="display: flex; align-items: center;">
                             <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
                             <span style="margin-left: 10px;">5.0 - 35 reviews</span>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="flex-shrink-0">
+                                <img src="../images/javier.png"
+                                alt="Generic placeholder image" class="img-fluid rounded-circle border border-dark border-3"
+                                style="width: 70px;">
+                            </div>
+                            <div class="flex-grow-1 ms-3 py-5">
+                                <div class="d-flex flex-row align-items-center mb-2">
+                                
+                                <p class="mb-0 me-2 montserratBold">Javier Pecinta Tempek</p>
+                                <ul class="mb-0 list-unstyled d-flex flex-row" style="color: #1B7B2C;">
+                                    <li>
+                                    <i class="bi bi-star-fill" style="color: #FFCC01;"></i>
+                                    </li>
+                                </ul>
+                                </div>
+                                <div>
+                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                    data-mdb-ripple-color="dark">+ Follow</button>
+                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                    data-mdb-ripple-color="dark">See profile</button>
+                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
+                                    data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
+                                </div>
+                            </div>
                         </div>
 
 
