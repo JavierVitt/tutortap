@@ -77,25 +77,11 @@ $complaindatum = query($syntax);
                         <h5 class="card-title">Form Pengajuan</h5>
                				<input type="text" class="form-control" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
                         <p class="card-text"></p>
-                    <button class="btn btn-outline-secondary" type="button">Submit</button>
-					</div>
+                        <button class="btn btn-outline-secondary" type="button">Submit</button>
+				</div>
+                <?php endforeach; ?>
 			</div>
         </div>
     </div>
-
-        <!-- <div class="card mb-3">
-            <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.
-                    This content is a little bit longer.</p>
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-            </div>
-        </div> -->
-
-
-
-
 </body>
-
 </html>
