@@ -1,7 +1,6 @@
 <?php
 $conn = mysqli_connect("localhost", "root", "", "tutortap");
 
-var_dump($conn);
 
 function query($syntax){
     global $conn;
