@@ -26,19 +26,16 @@ $datas = query($syntax);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<<<<<<< HEAD:views/home.html
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link href="../styles/styles.css" rel="stylesheet" />
 </head>
 
 <body class="montserratRegular">
-=======
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
->>>>>>> ef68ffc634f29781cc0074e6a856e6be3e78c64d:views/homeLearner.php
     <div class="navbar w-100 bg-ouryellow ">
         <div class="container-fluid d-flex justify-content-between">
             <div class="input-group w-75">
