@@ -1,5 +1,25 @@
+<?php
+    require_once '../functions.php';
+    if(isset($_POST['signIn'])){
+        $username = $_POST['email'];
+        $password = $_POST['password'];
+
+        $syntax = "SELECT * FROM USER WHERE email = '$username' AND password = '$password'";
+        $results = query($syntax);
+
+        $count = count($results);
+
+        if($count>0){
+            $id = $results[0]['userId'];
+            echo "<script>document.location.href = 'homeLearner.php?id=$id'</script>";
+        }else {
+
+        }
+    }
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">    
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +27,7 @@
     <title>Create Account</title>
     <link rel="stylesheet" type="text/css" href="../styles/styles.css">
     <link rel="stylesheet" type="text/css" href="opening.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
@@ -42,7 +63,7 @@
         <!-- Flash messages would go here, but are omitted for pure HTML -->
 
         <h2 class="p-3 text-center montserratBold pb-5" style="font-size: 40px;">Get Some Help!</h2>
-        <form action="/login" method="post">
+        <form action="" method="post">
             <!-- Email input -->
             <div class="input-group mb-3">
                 <button class="btn btn-outline-warning change" type="button" id="button-addon1">Email</button>
@@ -54,9 +75,8 @@
                 <button class="btn btn-outline-warning change" type="button" id="button-addon1">Password</button>
                 <input type="password" class="form-control" placeholder="Password" name="password" required>
             </div>
-
             <!-- Submit button -->
-            <button class="btn btn-outline-warning fontMonsseratSemiBold my-3" type="submit">Log In</button>
+            <button type="submit" name="signIn" class="btn btn-outline-warning fontMonsseratSemiBold my-3" type="submit">Log In</button>
             <a href="/" class="btn btn-outline-warning font-weight-semibold my-3">Back</a>
         </form>
     </div>
