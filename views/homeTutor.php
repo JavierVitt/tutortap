@@ -1,13 +1,12 @@
 <?php
 require_once '../functions.php';
-if(isset($_GET['id'])){
-    $idUser = $_GET['id'];
 
-    $syntax = "SELECT * FROM KELAS WHERE userId == $idUser";
-    $kelass = query($syntax);
-}else{
-    echo "<script>document.location.href='homeLearner.php'</script>";
-}
+$id = $_GET['id'];
+
+$idUser = $_GET['id'];
+
+$syntax = "SELECT * FROM KELAS WHERE userId = $idUser";
+$kelass = query($syntax);
 ?>
 
 <!DOCTYPE html>
@@ -112,7 +111,7 @@ if(isset($_GET['id'])){
                                 <?php
                                 $syn = "SELECT * FROM CLASS_RATING_RESULT WHERE classId = '" . $kelas['idKelas'] . "'";
                                 $hasils = query($syn);
-                                $rataRataRating = $hasils['totalRatingSum']/$hasils['totalRatingCount'];
+                                $rataRataRating = $hasils['totalRatingSum'] / $hasils['totalRatingCount'];
                                 ?>
                                 <span style="margin-left: 10px;"><?php echo $rataRataRating; ?> - <?php echo $hasils['totalRatingCount'] ?> reviews</span>
                             </div>
@@ -134,13 +133,13 @@ if(isset($_GET['id'])){
         </div>
     </div>
 
-    <div class="container-fluid bg-ouryellow d-flex justify-content-center">
+    <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
         <div class="btn-group w-50 py-5">
-            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
+            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='#'">
                 <h1>Tutor</h1>
             </button>
-            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;">
-                <h1>Learner</h1>
+            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $id; ?>'">
+                 <h1>Learner</h1>
             </button>
         </div>
     </div>
