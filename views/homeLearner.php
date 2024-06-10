@@ -1,8 +1,10 @@
 <?php
 require_once "../functions.php";
 
-$syntax = "SELECT * FROM KELAS";
-$datas = query($syntax);
+// $syntax = "SELECT * FROM KELAS";
+// $datas = query($syntax);
+$kelas = new Kelas();
+$datas = $kelas->getAllKelas();
 
 $id = $_GET['id'];
 ?>
