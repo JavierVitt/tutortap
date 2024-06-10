@@ -1,19 +1,94 @@
 <?php
+session_start();
 require_once "../functions.php";
 
+$adminQuery = "SELECT namaAdmin FROM admin LIMIT 1";
+$adminResult = query($adminQuery);
+$adminName = $adminResult[0]['namaAdmin'];
+
 // Fetch all complained orders where the adminId is 2020
-$syntax = "SELECT `order`.`idOrder`, `complain`.`complainId`, `complain`.`complainMessage` 
+$syntax = "SELECT `order`.`idOrder`, `complain`.`complainId`, `complain`.`complainMessage`, `complain`.`complainPicture`
            FROM `order` 
            JOIN `complain` ON `order`.`idOrder` = `complain`.`idOrder` 
            WHERE `complain`.`adminId` = 2020";
+
 $datas = query($syntax);
+
+// Check if the Approve button is clicked
+if (isset($_POST['approve'])) {
+    $complainId = $_POST['complainId']; // Get the complain ID from the form data
+
+    // Get the idOrder for the given complainId
+    $orderQuery = "SELECT `idOrder` FROM `complain` WHERE `complainId` = ?";
+    $stmt = mysqli_prepare($conn, $orderQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $complainId);
+    mysqli_stmt_execute($stmt);
+    $orderResult = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($orderResult) > 0) {
+        $idOrder = mysqli_fetch_assoc($orderResult)['idOrder'];
+    } else {
+        die("Error: No order found for complain with complainId of {$complainId}.");
+    }
+
+    // Change the statusOrder of the order to 4
+    $updateQuery = "UPDATE `order` SET `statusOrder` = 4 WHERE `idOrder` = ?";
+    $stmt = mysqli_prepare($conn, $updateQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $idOrder);
+    mysqli_stmt_execute($stmt);
+
+    // Delete the complaint from the complain table
+    $deleteQuery = "DELETE FROM complain WHERE complainId = ?";
+    $stmt = mysqli_prepare($conn, $deleteQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $complainId);
+    mysqli_stmt_execute($stmt);
+
+    $_SESSION['message'] = 'Complaint approved successfully.';
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+// Check if the Reject button is clicked
+if (isset($_POST['reject'])) {
+    $complainId = $_POST['complainId']; // Get the complain ID from the form data
+
+    // Get the idOrder for the given complainId
+    $orderQuery = "SELECT `idOrder` FROM `complain` WHERE `complainId` = ?";
+    $stmt = mysqli_prepare($conn, $orderQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $complainId);
+    mysqli_stmt_execute($stmt);
+    $orderResult = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($orderResult) > 0) {
+        $idOrder = mysqli_fetch_assoc($orderResult)['idOrder'];
+    } else {
+        die("Error: No order found for complain with complainId of {$complainId}.");
+    }
+
+    // Change the statusOrder of the order to 5
+    $updateQuery = "UPDATE `order` SET `statusOrder` = 5 WHERE `idOrder` = ?";
+    $stmt = mysqli_prepare($conn, $updateQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $idOrder);
+    mysqli_stmt_execute($stmt);
+
+    // Delete the complaint from the complain table
+    $deleteQuery = "DELETE FROM complain WHERE complainId = ?";
+    $stmt = mysqli_prepare($conn, $deleteQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $complainId);
+    mysqli_stmt_execute($stmt);
+
+    $_SESSION['message'] = 'Complaint rejected successfully.';
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+$message = $_SESSION['message'] ?? '';
+unset($_SESSION['message']);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>TutorTap - Home</title>
+    <title>TutorTap - Admin</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -48,8 +123,8 @@ $datas = query($syntax);
                     </div>
                 </div>
 
-                <div class="container w-25 row">
-                    Selamat Datang, Budi WASD
+                <div class="container w-25 row mt-1">
+                    <h5>Selamat datang, <?php echo $adminName; ?></h5>
                 </div>
             </div>
         </div>
@@ -66,6 +141,7 @@ $datas = query($syntax);
                             <th scope="col">idOrder</th>
                             <th scope="col">ComplainId</th>
                             <th scope="col">complainMessage</th>
+                            <th scope="col">Complain Picture</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -76,15 +152,24 @@ $datas = query($syntax);
                                 <td><?php echo $data['complainId']; ?></td>
                                 <td><?php echo $data['complainMessage']; ?></td>
                                 <td>
-                                    <button class="btn btn-success">Approve</button>
-                                    <button class="btn btn-danger">Reject</button>
+                                    <!-- Display the complain picture -->
+                                    <img src="path/to/your/pictures/directory/<?php echo $data['complainPicture']; ?>" alt="">
+                                </td>
+                                <td>
+                                    <form method="post" action="">
+                                        <input type="hidden" name="complainId" value="<?php echo $data['complainId']; ?>">
+                                        <button class="btn btn-success" type="submit" name="approve">Approve</button>
+                                        <button class="btn btn-danger" type="submit" name="reject">Reject</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
+
                 </table>
             </div>
         </div>
+
 
 
 
