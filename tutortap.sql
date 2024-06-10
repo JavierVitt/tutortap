@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2024 at 07:50 AM
+-- Generation Time: Jun 10, 2024 at 07:42 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -79,7 +79,8 @@ CREATE TABLE `class_rating` (
 CREATE TABLE `class_rating_result` (
   `classRatingResultId` int(16) NOT NULL,
   `totalRatingCount` int(11) NOT NULL,
-  `totalRatingSum` int(11) NOT NULL
+  `totalRatingSum` int(11) NOT NULL,
+  `classId` int(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -90,6 +91,7 @@ CREATE TABLE `class_rating_result` (
 
 CREATE TABLE `complain` (
   `complainId` int(16) NOT NULL,
+  `idOrder` int(16) NOT NULL,
   `complainMessage` varchar(1024) NOT NULL,
   `complainPicture` varchar(1024) NOT NULL,
   `adminId` int(16) NOT NULL
@@ -103,6 +105,7 @@ CREATE TABLE `complain` (
 
 CREATE TABLE `kelas` (
   `idKelas` int(16) NOT NULL,
+  `userId` int(16) NOT NULL,
   `namaKelas` varchar(200) NOT NULL,
   `hargaKelas` int(64) NOT NULL,
   `durasiKelas` varchar(64) NOT NULL,
@@ -138,7 +141,7 @@ CREATE TABLE `order` (
 CREATE TABLE `user` (
   `userId` int(16) NOT NULL,
   `nama` varchar(1024) NOT NULL,
-  `tanggalLahir` date NOT NULL,
+  `tanggalLahir` date DEFAULT NULL,
   `biografi` varchar(2048) NOT NULL,
   `profilePicture` varchar(1024) NOT NULL,
   `lokasi` varchar(1024) NOT NULL,
@@ -148,6 +151,13 @@ CREATE TABLE `user` (
   `noRek` varchar(64) NOT NULL,
   `saldo` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`userId`, `nama`, `tanggalLahir`, `biografi`, `profilePicture`, `lokasi`, `email`, `password`, `profesi`, `noRek`, `saldo`) VALUES
+(9999, 'adsi', NULL, 'Setelah menyelesaikan pendidikan S1, Budi mengawali kariernya sebagai seorang programmer di sebuah perusahaan startup teknologi di Jakarta. Berkat dedikasi dan kemampuannya, ia cepat naik jabatan menjadi seorang Software Development Manager. Di posisi ini, Budi bertanggung jawab atas pengembangan beberapa aplikasi penting yang digunakan oleh ribuan pengguna di seluruh Indonesia.\r\n\r\nPada tahun 2012, Budi pindah ke sebuah perusahaan multinasional dan berperan sebagai IT Project Manager. Di sini, ia memimpin berbagai proyek teknologi berskala besar yang melibatkan kolaborasi dengan tim-tim internasional. Pengalaman ini tidak hanya memperkaya pengetahuannya tentang manajemen proyek, tetapi juga memperkuat kemampuannya dalam bekerja dengan berbagai budaya dan tim yang beragam.', 'adsiProfpic.jpg', 'Siwalankerto, Surabaya', 'adsi@gmail.com', 'password', 'IT Manager', '8912001040', 200000);
 
 -- --------------------------------------------------------
 
@@ -210,20 +220,23 @@ ALTER TABLE `class_rating`
 -- Indexes for table `class_rating_result`
 --
 ALTER TABLE `class_rating_result`
-  ADD PRIMARY KEY (`classRatingResultId`);
+  ADD PRIMARY KEY (`classRatingResultId`),
+  ADD KEY `idKelasnya` (`classId`);
 
 --
 -- Indexes for table `complain`
 --
 ALTER TABLE `complain`
   ADD PRIMARY KEY (`complainId`),
-  ADD KEY `adminId` (`adminId`);
+  ADD KEY `adminId` (`adminId`),
+  ADD KEY `idOrder` (`idOrder`);
 
 --
 -- Indexes for table `kelas`
 --
 ALTER TABLE `kelas`
-  ADD PRIMARY KEY (`idKelas`);
+  ADD PRIMARY KEY (`idKelas`),
+  ADD KEY `tambahId` (`userId`);
 
 --
 -- Indexes for table `order`
@@ -309,7 +322,7 @@ ALTER TABLE `order`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userId` int(16) NOT NULL AUTO_INCREMENT;
+  MODIFY `userId` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000;
 
 --
 -- AUTO_INCREMENT for table `user_rating`
@@ -348,10 +361,23 @@ ALTER TABLE `class_rating`
   ADD CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`);
 
 --
+-- Constraints for table `class_rating_result`
+--
+ALTER TABLE `class_rating_result`
+  ADD CONSTRAINT `idKelasnya` FOREIGN KEY (`classId`) REFERENCES `kelas` (`idKelas`);
+
+--
 -- Constraints for table `complain`
 --
 ALTER TABLE `complain`
-  ADD CONSTRAINT `adminId` FOREIGN KEY (`adminId`) REFERENCES `admin` (`adminId`);
+  ADD CONSTRAINT `adminId` FOREIGN KEY (`adminId`) REFERENCES `admin` (`adminId`),
+  ADD CONSTRAINT `idOrder` FOREIGN KEY (`idOrder`) REFERENCES `order` (`idOrder`);
+
+--
+-- Constraints for table `kelas`
+--
+ALTER TABLE `kelas`
+  ADD CONSTRAINT `tambahId` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`);
 
 --
 -- Constraints for table `order`
