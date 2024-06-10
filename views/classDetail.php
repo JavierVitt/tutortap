@@ -108,7 +108,7 @@ $datas = query($syntax);
                             <div class="flex-grow-1 ms-3 py-5">
                                 <div class="d-flex flex-row align-items-center mb-2">
                                 
-                                <p class="mb-0 me-2 montserratBold">Javier Pecinta Tempek</p>
+                                <p class="mb-0 me-2 montserratBold">Javier Vittorio</p>
                                 <ul class="mb-0 list-unstyled d-flex flex-row" style="color: #1B7B2C;">
                                     <li>
                                     <i class="bi bi-star-fill" style="color: #FFCC01;"></i>
