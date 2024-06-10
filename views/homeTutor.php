@@ -34,54 +34,94 @@ $kelass = $kelas->getTutorKelas($idUser);
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="">
+    <!-- <div class="navbar w-100 " style="background-color: rgb(0,0,0);">
+        <div class="container-fluid d-flex justify-content-center">
+            <img src="../images/skilltap logo+brand.png" style="width:300px; " alt="">
+        </div>
+    </div> -->
     <div class="navbar w-100 bg-ouryellow">
         <div class="container-fluid d-flex justify-content-between">
-            <div class="input-group w-75">
-                <input type="text" class="form-control" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="container w-25 d-flex justify-content-center">
+                <a href="">
+                    <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
+                </a>
+            </div>
+            <div class="input-group w-50">
+                <input type="text" class="form-control montserratRegular" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary montserratRegular" type="button">Search</button>
+                    <button class="btn btn-outline-dark montserratSemiBold" type="button">Search</button>
                 </div>
             </div>
 
-            <div class="container w-25 row">
+            <div class="container w-25 px-5 row" style="color:black;">
                 <div class="container col-3">
-                    <i class="bi bi-envelope-fill text-white" style="font-size: 30px;"></i></a></th>
+                    <a href="">
+                    <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
+                    </a>
                 </div>
                 <div class="container col-3">
-                    <i class="bi bi-filter text-white" style="font-size: 30px;"></i></a></th>
+                    <a href="">
+                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
                 </div>
                 <div class="container col-3">
-                    <i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a></th>
+                    <a href="">
+                    <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
                 </div>
                 <div class="container col-3">
-                    <i class="bi bi-list text-white" style="font-size: 30px;"></i></a></th>
+                    <a href="">
+                    <i class="bi bi-list text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid text-center mt-5 montserratBold">
+    <div class="containter-fluid d-flex justify-content-center align-items-center my-4">
+        <div class="container mx-5 rounded-4 montserratBold" style="height:10%; width:50%; background-color: rgb(200,200,200)">
+            <div class="container-fluid row">
+                <div class="col-2 text-center text-primary">
+                    <i class="bi bi-wallet2" style="font-size:40px"></i>
+                </div>
+
+                <!-- akses tutor balance disini -->
+                <div class="col-7 text-center text-primary d-flex justify-content-center align-items-center">
+                    <h1 class="montserratSemiBold">Rp.304.000</h1>
+                </div>
+                <div class="col-3 text-center d-flex justify-content-center align-items-center">
+                    <button class="btn btn-outline-primary montserratBold" style="font-size:20px;">Withdraw</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid text-center montserratBold">
         <h1>Your Classes</h1>
     </div>
 
     <div class="container-fluid p-5">
         <div class="row">
-            <div class="col-12">
-                <div class="card mb-3">
-                    <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
+            <?php foreach ($kelass as $kelas) : ?>
+                <div class="card mb-3 col-6 p-4 shadow-lg p-3 mb-5 bg-white rounded">
+                    <img class="card-img-top" src="../images/<?php echo $kelas['fotoKelas']; ?>" alt="Card image cap" style="height: 200px; width: 100%; object-fit: cover;">
                     <div class="card-body">
                         <!-- CLASS.namaKelas -->
-                        <h5 class="card-title">Computer Setup Tutoring</h5>
+                        <h5 class="card-title"><?php echo $kelas['namaKelas']; ?></h5>
                         <!-- CLASS.hargaKelas, CLASS.durasiKelas -->
-                        <h5 class="card-text">Rp.50.000/hour</h5>
+                        <h5 class="card-text">Rp.<?= $kelas['hargaKelas']; ?>/<?= $kelas['durasiKelas']; ?></h5>
                         <!-- CLASS.deskripsiKelas -->
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, vitae, voluptates nulla perspiciatis inventore magnam sint vero ea ratione ex ut. Ducimus nostrum repudiandae, exercitationem, perspiciatis facere perferendis dolorum saepe numquam delectus, ut minus architecto voluptatem reprehenderit asperiores harum accusantium iusto atque id aspernatur provident non sapiente tempore vitae? Iste?>
-                        <div class="card-text" style="display: flex; align-items: center;">
-                            <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
-                            <!-- CLASS_RATING_RESULT.totalRatingSum/CLASS_RATING_RESULT.totalRatingCount, CLASS_RATING_RESULT.totalRatingCount -->
-                            <span style="margin-left: 10px;">5.0 - 35 reviews</span>
-                        </div>
+                        <p class="card-text h-50"><?= $kelas['deskripsiKelas']; ?></p>
+                        <!-- <div class="card-text" style="display: flex; align-items: center;">
+                            <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i> -->
+                            <?php
+                            // $syn = "SELECT * FROM CLASS_RATING_RESULT WHERE classId = '" . $kelas['idKelas'] . "'";
+                            // $hasils = query($syn);
+                            // $rataRataRating = $hasils['totalRatingSum'] / $hasils['totalRatingCount'];
+                            ?>
+                            <!-- <span style="margin-left: 10px;"><?php echo $rataRataRating; ?> - <?php echo $hasils['totalRatingCount'] ?> reviews</span>
+                        </div> -->
 
                         <div class="container-fluid d-flex justify-content-center">
                             <div class="btn-group w-50">
@@ -95,47 +135,13 @@ $kelass = $kelas->getTutorKelas($idUser);
                         </div>
                     </div>
                 </div>
-                <?php foreach ($kelass as $kelas) : ?>
-                    <div class="card mb-3">
-                        <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
-                        <div class="card-body">
-                            <!-- CLASS.namaKelas -->
-                            <h5 class="card-title"><?php $kelas['namaKelas'] ?></h5>
-                            <!-- CLASS.hargaKelas, CLASS.durasiKelas -->
-                            <h5 class="card-text">Rp.<?= $kelas['hargaKelas']; ?>/hour</h5>
-                            <!-- CLASS.deskripsiKelas -->
-                            <p class="card-text"><?= $kelas['deskripsiKelas']; ?></p>
-                            <div class="card-text" style="display: flex; align-items: center;">
-                                <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
-                                <!-- CLASS_RATING_RESULT.totalRatingSum/CLASS_RATING_RESULT.totalRatingCount, CLASS_RATING_RESULT.totalRatingCount -->
-                                <?php
-                                $syn = "SELECT * FROM CLASS_RATING_RESULT WHERE classId = '" . $kelas['idKelas'] . "'";
-                                $hasils = query($syn);
-                                $rataRataRating = $hasils['totalRatingSum'] / $hasils['totalRatingCount'];
-                                ?>
-                                <span style="margin-left: 10px;"><?php echo $rataRataRating; ?> - <?php echo $hasils['totalRatingCount'] ?> reviews</span>
-                            </div>
-
-                            <div class="container-fluid d-flex justify-content-center">
-                                <div class="btn-group w-50">
-                                    <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
-                                        <a href=""><i class="bi bi-pencil-fill" style="color: gray;"></i></a>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger" style="font-size: 25px;">
-                                        <a href=""><i class="bi bi-trash-fill" style="color:red;"></i></a>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
     <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
         <div class="btn-group w-50 py-5">
-            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='#'">
+            <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='hoeTutor.php?id=<?php echo $id; ?>'">
                 <h1>Tutor</h1>
             </button>
             <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $id; ?>'">
