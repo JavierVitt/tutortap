@@ -1,12 +1,12 @@
 <?php
 require_once '../functions.php';
 
-$id = $_GET['id'];
+// $id = $_GET['id'];
 
 $idUser = $_GET['id'];
 
-$syntax = "SELECT * FROM KELAS WHERE userId = $idUser";
-$kelass = query($syntax);
+$kelas = new Kelas();
+$kelass = $kelas->getTutorKelas($idUser);
 ?>
 
 <!DOCTYPE html>

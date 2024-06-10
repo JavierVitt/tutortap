@@ -24,4 +24,10 @@ class Kelas
         $datas = query($syntax);
         return $datas;
     }
+    static function getTutorKelas($idUser)
+    {
+        $syntax = "SELECT * FROM KELAS WHERE userId = $idUser";
+        $kelass = query($syntax);
+        return $kelass;
+    }
 }
