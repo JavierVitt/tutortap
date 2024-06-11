@@ -1,8 +1,13 @@
 <?php
 require_once "../functions.php";
+$idKelas = $_GET['classId'];
+$idUser = $_GET['id'];
 
-$syntax = "SELECT * FROM KELAS";
-$datas = query($syntax);
+$syntax = "SELECT * FROM KELAS where idKelas = $idKelas";
+$kelas = query($syntax);
+
+echo $kelas['namaKelas'];
+
 ?>
 
 <!DOCTYPE html>
@@ -73,23 +78,22 @@ $datas = query($syntax);
 
         <div class="container-fluid">
             <div class="row">
-                <?php foreach ($datas as $data) : ?>
                 <div class="card col-12" >
-                    <img class="card-img-top py-3" src="../images/<?php echo $data['fotoKelas']; ?>"
+                    <img class="card-img-top py-3" src="../images/<?php echo $kelas['fotoKelas']; ?>"
                         alt="Card image cap">
                     <div class="card-body">
 
                         <!-- hapus ini nanti -->
                         <h5 class="card-title montserratBold py-3" style="font-size:35px">
-                            <?php echo $data['namaKelas']; ?>
+                            <?php echo $kelas['namaKelas']; ?>
                         </h5>
 
 
                         <p class="card-text">
-                            <?php echo $data['deskripsiKelas']; ?>
+                            <?php echo $kelas['deskripsiKelas']; ?>
                         </p>
                         <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp.
-                            <?php echo $data['hargaKelas']; ?>
+                            <?php echo $kelas['hargaKelas']; ?>
                         </p>
 
 
@@ -125,11 +129,8 @@ $datas = query($syntax);
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
-                <?php endforeach; ?>
             </div>
         </div>
 
