@@ -1,49 +1,70 @@
 <?php
 require_once "../functions.php";
 
+$idOrder = $_GET['idOrder'];
+
+if(isset($_POST['submit'])){
+    $complainMessage = $_POST['complainMessage'];
+    $complainPicture = $_POST['complainPicture'];
+
+    $complain = new Complain();
+    $complain->complainOrder($idOrder, $complainMessage, $complainPicture);
+    echo '<script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Oops...",
+                        text: "Complain Accepted",
+                        footer: \'<a href="#"></a>\'
+                    });
+                });
+            </script>';
+}
+
+
 $syntax = "SELECT * FROM KELAS";
 $datas = query($syntax);
 $syntaxComplain = "SELECT * FROM KELAS";
 $complaindatum = query($syntax);
 
 // Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the complaint message from the form data
-    $complainMessage = $_POST['complainMessage'];
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     // Get the complaint message from the form data
+//     $complainMessage = $_POST['complainMessage'];
 
-    // Get the uploaded picture
-    $complainPicture = $_FILES['complainPicture'];
+//     // Get the uploaded picture
+//     $complainPicture = $_FILES['complainPicture'];
 
-    //TESTING IDADMIN = 2020 ATAU YANG PERTAMA MUNCUL. UBAH JADI ID ADMIN [0] SORT BY NUMBER OF COMPLAINTS ON HAND
-    $adminQuery = "SELECT adminId FROM admin LIMIT 1";
-    $adminResult = query($adminQuery);
-    $adminId = $adminResult[0]['adminId'];
+//     //TESTING IDADMIN = 2020 ATAU YANG PERTAMA MUNCUL. UBAH JADI ID ADMIN [0] SORT BY NUMBER OF COMPLAINTS ON HAND
+//     $adminQuery = "SELECT adminId FROM admin LIMIT 1";
+//     $adminResult = query($adminQuery);
+//     $adminId = $adminResult[0]['adminId'];
 
-    //TESTING IDCLASS = 1
-    $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
-    $orderResult = query($orderQuery);
-    if (count($orderResult) > 0) {
-        $idOrder = $orderResult[0]['idOrder'];
-    } else {
-        die("Error: No orders found for class with idClass of 1.");
-    }
+//     //TESTING IDCLASS = 1
+//     $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
+//     $orderResult = query($orderQuery);
+//     if (count($orderResult) > 0) {
+//         $idOrder = $orderResult[0]['idOrder'];
+//     } else {
+//         die("Error: No orders found for class with idClass of 1.");
+//     }
 
-    $idOrder = $orderResult[0]['idOrder'];
+//     $idOrder = $orderResult[0]['idOrder'];
 
-    // Insert the new complaint into the "complain" table
-    $query = "INSERT INTO complain (complainMessage, adminId, idOrder) VALUES (?, ?, ?)";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'sii', $complainMessage, $adminId, $idOrder);
-    mysqli_stmt_execute($stmt);
+//     // Insert the new complaint into the "complain" table
+//     $query = "INSERT INTO complain (complainMessage, adminId, idOrder) VALUES (?, ?, ?)";
+//     $stmt = mysqli_prepare($conn, $query);
+//     mysqli_stmt_bind_param($stmt, 'sii', $complainMessage, $adminId, $idOrder);
+//     mysqli_stmt_execute($stmt);
 
-    // Update the statusOrder of the order to '3'
-    $updateQuery = "UPDATE `order` SET `statusOrder` = 3 WHERE `idOrder` = ?";
-    $stmt = mysqli_prepare($conn, $updateQuery);
-    mysqli_stmt_bind_param($stmt, 'i', $idOrder);
-    mysqli_stmt_execute($stmt);
+//     // Update the statusOrder of the order to '3'
+//     $updateQuery = "UPDATE `order` SET `statusOrder` = 3 WHERE `idOrder` = ?";
+//     $stmt = mysqli_prepare($conn, $updateQuery);
+//     mysqli_stmt_bind_param($stmt, 'i', $idOrder);
+//     mysqli_stmt_execute($stmt);
 
-    echo "Complaint submitted successfully.";
-}
+//     echo "Complaint submitted successfully.";
+// }
 
 
 ?>
@@ -71,6 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -105,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="container-fluid">
-        <div class="row">
+        <!-- <div class="row">
             <?php foreach ($datas as $data) : ?>
                 <div class="card">
                     <div class="card-body">
@@ -114,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
             <?php endforeach; ?>
-        </div>
+        </div> -->
         <div class="row">
             <div class="card">
                 <div class="card-body">
@@ -123,9 +146,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" class="form-control" name="complainMessage" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
                         <input type="file" name="complainPicture">
                         <p class="card-text"></p>
-                        <button class="btn btn-primary position-relative end-0" type="submit">Submit</button>
+                        <button class="btn btn-primary position-relative end-0" type="submit" name="submit">Submit</button>
                     </form>
-
                 </div>
             </div>
         </div>

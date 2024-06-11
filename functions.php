@@ -31,3 +31,9 @@ class Kelas
         return $kelass;
     }
 }
+class Complain{
+    static function complainOrder($idOrder, $complainMessage, $complainPicture){
+        $syntax = "INSERT INTO COMPLAIN VALUES ('', $idOrder, $complainMessage, $complainPicture,2020)";
+        query($syntax);
+    }
+}

@@ -138,7 +138,7 @@ $kelass = $kelas->getTutorKelas($idUser);
             <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='#'">
                 <h1>Tutor</h1>
             </button>
-            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $id; ?>'">
+            <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $idUser; ?>'">
                  <h1>Learner</h1>
             </button>
         </div>
