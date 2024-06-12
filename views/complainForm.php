@@ -1,70 +1,27 @@
 <?php
 require_once "../functions.php";
 
-$idOrder = $_GET['idOrder'];
-
-if(isset($_POST['submit'])){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the complaint message from the form data
     $complainMessage = $_POST['complainMessage'];
-    $complainPicture = $_POST['complainPicture'];
 
-    $complain = new Complain();
-    $complain->complainOrder($idOrder, $complainMessage, $complainPicture);
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Oops...",
-                        text: "Complain Accepted",
-                        footer: \'<a href="#"></a>\'
-                    });
-                });
-            </script>';
+    // Get the order id
+    $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
+    $orderResult = query($orderQuery);
+    if (count($orderResult) > 0) {
+        $idOrder = $orderResult[0]['idOrder'];
+    } else {
+        die("Error: No orders found for class with idClass of 1.");
+    }
+
+    // Create an Order object
+    $order = new Order($conn, $idOrder);
+
+    // Create a complaint and change order status
+    $order->createComplain($complainMessage);
+    $order->changeOrderStatus();
 }
 
-
-$syntax = "SELECT * FROM KELAS";
-$datas = query($syntax);
-$syntaxComplain = "SELECT * FROM KELAS";
-$complaindatum = query($syntax);
-
-// Check if form is submitted
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     // Get the complaint message from the form data
-//     $complainMessage = $_POST['complainMessage'];
-
-//     // Get the uploaded picture
-//     $complainPicture = $_FILES['complainPicture'];
-
-//     //TESTING IDADMIN = 2020 ATAU YANG PERTAMA MUNCUL. UBAH JADI ID ADMIN [0] SORT BY NUMBER OF COMPLAINTS ON HAND
-//     $adminQuery = "SELECT adminId FROM admin LIMIT 1";
-//     $adminResult = query($adminQuery);
-//     $adminId = $adminResult[0]['adminId'];
-
-//     //TESTING IDCLASS = 1
-//     $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
-//     $orderResult = query($orderQuery);
-//     if (count($orderResult) > 0) {
-//         $idOrder = $orderResult[0]['idOrder'];
-//     } else {
-//         die("Error: No orders found for class with idClass of 1.");
-//     }
-
-//     $idOrder = $orderResult[0]['idOrder'];
-
-//     // Insert the new complaint into the "complain" table
-//     $query = "INSERT INTO complain (complainMessage, adminId, idOrder) VALUES (?, ?, ?)";
-//     $stmt = mysqli_prepare($conn, $query);
-//     mysqli_stmt_bind_param($stmt, 'sii', $complainMessage, $adminId, $idOrder);
-//     mysqli_stmt_execute($stmt);
-
-//     // Update the statusOrder of the order to '3'
-//     $updateQuery = "UPDATE `order` SET `statusOrder` = 3 WHERE `idOrder` = ?";
-//     $stmt = mysqli_prepare($conn, $updateQuery);
-//     mysqli_stmt_bind_param($stmt, 'i', $idOrder);
-//     mysqli_stmt_execute($stmt);
-
-//     echo "Complaint submitted successfully.";
-// }
 
 
 ?>
@@ -92,33 +49,104 @@ $complaindatum = query($syntax);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .bg-ouryellow {
+            background-color: #FFCC01;
+        }
+
+        .card-body {
+            position: relative;
+            height: 245px;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-icon i {
+            transition: transform 0.2s;
+        }
+
+        .btn-icon:hover i {
+            transform: scale(1.2);
+        }
+
+        .container-fluid.text-center.mt-5 h1 {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card {
+            margin-top: 2rem;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            border: 2px solid #FFCC01;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #FFCC01;
+            border: none;
+            color: #343a40;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6b800;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        input::placeholder {
+            color: #d1d1d1;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="navbar w-100 bg-ouryellow ">
-        <div class="container-fluid d-flex justify-content-between">
-            <div class="input-group w-75">
-                <input type="text" class="form-control" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">Search</button>
-                </div>
-            </div>
-
-            <div class="container w-25 row">
-                <div class="container col-3">
-                    <i class="bi bi-envelope-fill text-white" style="font-size: 30px;"></i></a></th>
-                </div>
-                <div class="container col-3">
-                    <i class="bi bi-filter text-white" style="font-size: 30px;"></i></a></th>
-                </div>
-                <div class="container col-3">
-                    <i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a></th>
-                </div>
-                <div class="container col-3">
-                    <i class="bi bi-list text-white" style="font-size: 30px;"></i></a></th>
-                </div>
+    <div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:100px; background-color:black" alt="">
+            </a>
+    
+            <!-- Navigation Icons -->
+            <div class="navbar-nav ms-auto">
+                <a class="btn-icon me-5" href="#"><i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-filter text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon" href="#"><i class="bi bi-list text-white" style="font-size: 30px;"></i></a>
             </div>
         </div>
     </div>
@@ -126,28 +154,18 @@ $complaindatum = query($syntax);
     <div class="container-fluid text-center mt-5">
         <h1>Complain Form</h1>
     </div>
-
     <div class="container-fluid">
-        <!-- <div class="row">
-            <?php foreach ($datas as $data) : ?>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
-                        <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
+                        <h5 class="card-title">Form Pengajuan</h5>
+                        <form method="post" action="" enctype="">
+                            <input type="text" class="form-control" name="complainMessage" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2" autocomplete="off" autofocus>
+                            <p class="card-text"></p>
+                            <button class="btn btn-primary position-relative end-0 mt-0" type="submit" name="submit">Submit</button>
+                        </form>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div> -->
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Form Pengajuan</h5>
-                    <form method="post" action="" enctype="multipart/form-data">
-                        <input type="text" class="form-control" name="complainMessage" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2">
-                        <input type="file" name="complainPicture">
-                        <p class="card-text"></p>
-                        <button class="btn btn-primary position-relative end-0" type="submit" name="submit">Submit</button>
-                    </form>
                 </div>
             </div>
         </div>
