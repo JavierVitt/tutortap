@@ -78,3 +78,8 @@ class Admin{
         echo "<script>document.location.href = '../views/AdminApproval.php'</script>";
     }
 }
+class User{
+    static function checkSaldo($idUser){
+        $syn = "SELECT saldo FROM USER WHERE userId = $idUser";
+    }
+}
