@@ -1,3 +1,9 @@
+<?php
+  $senderId = $_GET['id'];
+
+  $syn = "SELECT * FROM CHAT_ROOM WHERE senderId = $senderId OR receriverId = $senderId AND "
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -32,8 +32,28 @@ class Kelas
     }
 }
 class Complain{
-    static function complainOrder($idOrder, $complainMessage, $complainPicture){
-        $syntax = "INSERT INTO COMPLAIN VALUES ('', $idOrder, $complainMessage, $complainPicture,2020)";
-        query($syntax);
+    static function upload($data){
+        $namaGambar = $data['complainPicture']['name'];
+        $tmpName = $data['complainPicture']['tmp_name'];
+
+        $namaFileBaru = uniqid() . '.jpg';
+
+        move_uploaded_file($tmpName, '../complain_picture/' . $namaFileBaru);
+
+        return $namaGambar;
+    }
+    static function complainOrder($idOrder, $data, $files){
+
+        global $conn;
+
+        $complainMessage = $data['complainMessage'];
+
+        $gambar = self::upload($files);
+        if( !$gambar ){
+            return false;
+        }
+
+        $syntax = "INSERT INTO COMPLAIN VALUES ('', $idOrder, '$complainMessage', '$gambar',2020)";
+        mysqli_query($conn, $syntax);
     }
 }

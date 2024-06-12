@@ -1,14 +1,11 @@
 <?php
 require_once "../functions.php";
 
-$idOrder = $_GET['idOrder'];
+$idOrder = (int)$_GET['idOrder'];
 
 if(isset($_POST['submit'])){
-    $complainMessage = $_POST['complainMessage'];
-    $complainPicture = $_POST['complainPicture'];
-
     $complain = new Complain();
-    $complain->complainOrder($idOrder, $complainMessage, $complainPicture);
+    $complain->complainOrder($idOrder, $_POST, $_FILES);
     echo '<script>
                 document.addEventListener("DOMContentLoaded", function () {
                     Swal.fire({
