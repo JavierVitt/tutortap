@@ -82,10 +82,11 @@ class User{
     static function checkSaldo($idUser, $reqSaldo){
         global $conn;
 
-        $syn = "SELECT saldo FROM USER WHERE userId = $idUser";
+        $syn = "SELECT * FROM USER WHERE userId = $idUser";
         $saldo = query($syn);
+        $saldo = $saldo[0]['saldo'];
 
-        if($reqSaldo>$saldo){
+        if((int)$reqSaldo>(int)$saldo){
             //Gk valid
             echo '<script>
                 document.addEventListener("DOMContentLoaded", function () {
@@ -99,7 +100,7 @@ class User{
             </script>';
         }else{
             //Valid
-            $saldoAkhir = $saldo-$reqSaldo;
+            $saldoAkhir = (int)$saldo-(int)$reqSaldo;
             
             $syn = "UPDATE USER SET saldo = $saldoAkhir WHERE userId = $idUser";
             mysqli_query($conn, $syn);
@@ -107,13 +108,20 @@ class User{
             echo '<script>
                 document.addEventListener("DOMContentLoaded", function () {
                     Swal.fire({
-                        icon: "error",
+                        icon: "success",
                         title: "Oops...",
                         text: "Withdraw Success!",
-                        footer: \'<a href="#"></a>\'
+                        footer: \'<a href="../throw/withdraw.php?id=$idUser"></a>\'
                     });
                 });
             </script>';
+            echo "<script>document.location.href = ''</script>";
         }
+    }
+    static function getSaldo($idUser){
+        $syn = "SELECT * FROM USER WHERE userId = $idUser";
+        $saldo = query($syn);
+
+        return $saldo[0]['saldo'];
     }
 }
