@@ -116,22 +116,19 @@
 </head>
 
 <body>
-    <div class="navbar w-100 bg-ouryellow">
-        <div class="container-fluid d-flex justify-content-between">
-            <h1>Your Classes</h1>
-            <div class="container w-25 row">
-                <div class="col-3">
-                    <a href="#" class="btn-icon"><i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a>
-                </div>
-                <div class="col-3">
-                    <a href="#" class="btn-icon"><i class="bi bi-filter text-white" style="font-size: 30px;"></i></a>
-                </div>
-                <div class="col-3">
-                    <a href="#" class="btn-icon"><i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a>
-                </div>
-                <div class="col-3">
-                    <a href="#" class="btn-icon"><i class="bi bi-list text-white" style="font-size: 30px;"></i></a>
-                </div>
+    <div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:100px; background-color:black" alt="">
+            </a>
+    
+            <!-- Navigation Icons -->
+            <div class="navbar-nav ms-auto">
+                <a class="btn-icon me-5" href="#"><i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-filter text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon" href="#"><i class="bi bi-list text-white" style="font-size: 30px;"></i></a>
             </div>
         </div>
     </div>
@@ -140,15 +137,15 @@
         <h1>Withdraw Tutor Balance</h1>
     </div>
 
-    <div class="container-fluid d-flex justify-content-center align-items-center my-4">
-        <div class="container mx-auto rounded-4 montserratBold" style="height: 10%; width: 50%; background-color: rgb(200, 200, 200)">
-            <div class="container-fluid row justify-content-center align-items-center">
-                <div class="col-2 text-center text-primary">
-                    <i class="bi bi-wallet2" style="font-size: 40px"></i>
+    <div class="container-fluid d-flex justify-content-center align-items-center">
+        <div class="container mx-auto rounded-4 shadow-lg p-4" style="width: fit-content; background-color: #FFCC01;">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-3 text-center text-black">
+                    <i class="bi bi-wallet2" style="font-size: 60px;"></i>
                 </div>
-                <!-- akses tutor balance disini -->
-                <div class="col-7 text-center text-primary">
-                    <h1 class="montserratSemiBold m-0">Rp.304.000</h1>
+                <div class="col-9 text-start text-black">
+                    <h2 class="montserratRegular mb-0">Your Balance</h2>
+                    <p class="montserratSemiBold" style="font-size: 1.5rem; margin-bottom: 0;">Rp. 304,000</p>
                 </div>
             </div>
         </div>
