@@ -198,7 +198,7 @@ $results = $order->showAllKelas($idUser);
     <!-- Navbar -->
     <div class="navbar w-100">
         <div class="container-fluid d-flex justify-content-between">
-            <a href="#" class="back-button"><i class="bi bi-chevron-left" style="font-weight:bolder;"></i></a>
+            <a href="homeLearner.php?id=<?=$idUser?>" class="back-button"><i class="bi bi-chevron-left" style="font-weight:bolder;"></i></a>
             <div class="d-flex">
                 <div class="container col-3">
                     <i class="bi bi-share-fill text-white mx-2" style="font-size: 30px;"></i>

@@ -7,6 +7,9 @@ $idUser = $_GET['id'];
 
 $kelas = new Kelas();
 $kelass = $kelas->getTutorKelas($idUser);
+
+$user = new User();
+$saldo = $user->getSaldo($idUser);
 ?>
 
 <!DOCTYPE html>
@@ -88,10 +91,10 @@ $kelass = $kelas->getTutorKelas($idUser);
 
                 <!-- akses tutor balance disini -->
                 <div class="col-7 text-center text-primary d-flex justify-content-center align-items-center">
-                    <h1 class="montserratSemiBold">Rp.304.000</h1>
+                    <h1 class="montserratSemiBold"><?php echo $saldo; ?></h1>
                 </div>
                 <div class="col-3 text-center d-flex justify-content-center align-items-center">
-                    <button class="btn btn-outline-primary montserratBold" style="font-size:20px;">Withdraw</button>
+                    <button class="btn btn-outline-primary montserratBold" style="font-size:20px;" onclick="window.location.href='WithdrawBalance.php?id=<?=$idUser;?>'">Withdraw</button>
                 </div>
             </div>
         </div>

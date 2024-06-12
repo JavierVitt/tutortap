@@ -110,7 +110,7 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-  <<div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
+  <div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand" href="#">
@@ -195,7 +195,7 @@ if (isset($_POST['submit'])) {
               <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
                 <div class="input-group mb-0">
                   <input type="text" class="form-control" placeholder="Type message" aria-label="Recipient's username" name="textBox" aria-describedby="button-addon2" />
-                  <button data-mdb-button-init data-mdb-ripple-init class="btn btn-warning" type="submit" name="submit" id="button-addon2" style="padding-top: .55rem;">
+                  <button data-mdb-button-init data-mdb-ripple-init class="btn btn-warning" type="submit" name="submit" id="button-addon2" style="padding-top: .55rem; height: 2.47rem;">
                     Send
                   </button>
                 </div>

@@ -170,6 +170,6 @@ function validasiPesanan(){
                 <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
             </ul>
         </footer>
-    </div>
+    </div>
 
 </html>

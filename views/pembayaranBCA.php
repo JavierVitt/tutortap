@@ -9,6 +9,8 @@ $users = query($syn);
 $syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas"; 
 $kelas = query($syn);
 
+
+
 if(count($users) == 0 || count($kelas) == 0){
     // echo "<script>document.location.href = 'homeLearner.php?id=$idUser'</script>";
     echo "<script>document.location.href = 'error.php?status=queryError'</script>";
@@ -32,9 +34,15 @@ function requestVAToBank($harga){
     global $idOrder;
     $vaOrder = generateCode();
     $order = new Order();
-
     $order->setVA($idOrder, $vaOrder);
 }
+
+function pembayaranSelesai(){
+
+}
+
+
+requestVAToBank($harga);
 
 $order = new Order();
 $virtualAccount = $order->getVA($idOrder);
@@ -46,6 +54,7 @@ $virtualAccount = $order->getVA($idOrder);
     // Function to start the countdown timer
     function startCountdown(duration, display) {
         var timer = duration, minutes, seconds;
+        timer = duration;
         setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
@@ -56,17 +65,40 @@ $virtualAccount = $order->getVA($idOrder);
             display.textContent = minutes + ":" + seconds;
 
             if (--timer < 0) {
-                timer = duration;
+                timer = 0;
+                console.log(0);
+
+                // Create an AJAX request to a PHP file
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "delete_order.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // Handle response received from the server
+                        console.log(this.responseText);
+                    }
+                };
+                // Send the request with the idOrder parameter
+                xhr.send("idOrder=" + encodeURIComponent(<?php echo $idOrder; ?>));
             }
+
+            if(timer <= 590){
+                console.log("Pembayaran sudah dilakukan");
+                window.location.href = "orderList.php?id=<?php echo $idUser; ?>";
+            }
+
         }, 1000);
     }
 
     window.onload = function () {
-        var tenMinutes = 60 * 10, // Change 10 to whatever minutes you need
+        var tenMinutes = 10 * 60, // Change 10 to whatever minutes you need
             display = document.getElementById('countdown');
         startCountdown(tenMinutes, display);
     };
 </script>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -159,7 +191,7 @@ $virtualAccount = $order->getVA($idOrder);
 
         <!-- countdown -->
         <div class="container-fluid text-center">
-            <h1 id="countdown" class="text-danger">10:00</h1>
+            <h1 id="countdown" class="text-danger"></h1>
         </div>
 
               
@@ -184,6 +216,6 @@ $virtualAccount = $order->getVA($idOrder);
                 <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
             </ul>
         </footer>
-    </div>
+    </div>
 
 </html>

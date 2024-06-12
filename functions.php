@@ -20,7 +20,7 @@ class Kelas
 {
     static function getAllKelas()
     {
-        $syntax = "SELECT * FROM KELAS WHERE status === 1";
+        $syntax = "SELECT * FROM KELAS WHERE statusKelas = 1";
         $datas = query($syntax);
         return $datas;
     }
@@ -164,6 +164,20 @@ class Order{
         
         $result = query($syn);
         return $result;
+    }
+    static function deleteOrder($idOrder){
+        global $conn;
+
+        $syn = "DELETE FROM order WHERE idOrder = $idOrder";
+        mysqli_query($conn, $syn);
+    }
+    static function getOrderStatus($idOrder){
+        global $conn;
+
+        $syn = "SELECT * FROM order WHERE idOrder = $idOrder";
+        $result = query($syn);
+
+        return $result[0]['statusOrder'];
     }
 }
 class Chat{
