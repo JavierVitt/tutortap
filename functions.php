@@ -79,7 +79,41 @@ class Admin{
     }
 }
 class User{
-    static function checkSaldo($idUser){
+    static function checkSaldo($idUser, $reqSaldo){
+        global $conn;
+
         $syn = "SELECT saldo FROM USER WHERE userId = $idUser";
+        $saldo = query($syn);
+
+        if($reqSaldo>$saldo){
+            //Gk valid
+            echo '<script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Your balance isn\'t enough!",
+                        footer: \'<a href="#"></a>\'
+                    });
+                });
+            </script>';
+        }else{
+            //Valid
+            $saldoAkhir = $saldo-$reqSaldo;
+            
+            $syn = "UPDATE USER SET saldo = $saldoAkhir WHERE userId = $idUser";
+            mysqli_query($conn, $syn);
+            
+            echo '<script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Withdraw Success!",
+                        footer: \'<a href="#"></a>\'
+                    });
+                });
+            </script>';
+        }
     }
 }

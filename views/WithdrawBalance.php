@@ -1,42 +1,22 @@
 <?php
-require_once "../functions.php";
+    require_once '../functions.php';
 
-// Fetch all classes
-$syntax = "SELECT * FROM KELAS";
-$datas = query($syntax);
+    $idUser = $_GET['id'];
 
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the withdrawal amount from the form data
-    $withdrawalAmount = $_POST['withdrawalAmount'];
+    if( isset($_POST['submit']) ){
+        $request = $_POST['withdrawBalance'];
 
-    // Get the user's balance
-    // This is just an example, replace it with your actual query to get user's balance
-    $balanceQuery = "SELECT saldo FROM user WHERE userId = YOUR_USER_ID";
-    $balanceResult = query($balanceQuery);
-    $balance = $balanceResult[0]['saldo'];
-
-    // Check if the withdrawal amount is less than or equal to the user's balance
-    if ($withdrawalAmount <= $balance) {
-        // Subtract the withdrawal amount from the user's balance
-        $newBalance = $balance - $withdrawalAmount;
-        $updateBalanceQuery = "UPDATE user SET saldo = ? WHERE userId = YOUR_USER_ID";
-        $stmt = mysqli_prepare($conn, $updateBalanceQuery);
-        mysqli_stmt_bind_param($stmt, 'i', $newBalance);
-        mysqli_stmt_execute($stmt);
-
-        echo "Withdrawal successful. Your new balance is " . $newBalance;
-    } else {
-        echo "Insufficient balance.";
+        $user = new User();
+        $user->checkSaldo($idUser, $request);
     }
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>TutorTap - Home</title>
+    <title>Withdraw</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -55,63 +35,140 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .bg-ouryellow {
+            background-color: #FFCC01;
+        }
+
+        .card-body {
+            position: relative;
+            height: 225px;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-icon i {
+            transition: transform 0.2s;
+        }
+
+        .btn-icon:hover i {
+            transform: scale(1.2);
+        }
+
+        .container-fluid.text-center.mt-5 h1 {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card {
+            margin-top: 2rem;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            border: 2px solid #FFCC01;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #FFCC01;
+            border: none;
+            color: #343a40;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6b800;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="navbar w-100 bg-ouryellow ">
+    <div class="navbar w-100 bg-ouryellow">
         <div class="container-fluid d-flex justify-content-between">
-            <div class="input-group w-75">
-                <input type="text" class="form-control" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">Search</button>
-                </div>
-            </div>
-
+            <h1>Your Classes</h1>
             <div class="container w-25 row">
-                <div class="container col-3">
-                    <i class="bi bi-envelope-fill text-white" style="font-size: 30px;"></i></a></th>
+                <div class="col-3">
+                    <a href="#" class="btn-icon"><i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a>
                 </div>
-                <div class="container col-3">
-                    <i class="bi bi-filter text-white" style="font-size: 30px;"></i></a></th>
+                <div class="col-3">
+                    <a href="#" class="btn-icon"><i class="bi bi-filter text-white" style="font-size: 30px;"></i></a>
                 </div>
-                <div class="container col-3">
-                    <i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a></th>
+                <div class="col-3">
+                    <a href="#" class="btn-icon"><i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a>
                 </div>
-                <div class="container col-3">
-                    <i class="bi bi-list text-white" style="font-size: 30px;"></i></a></th>
+                <div class="col-3">
+                    <a href="#" class="btn-icon"><i class="bi bi-list text-white" style="font-size: 30px;"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container-fluid text-center mt-5">
-        <h1 class="montserratBold">Balance Withdrawal</h1>
+        <h1>Withdraw Tutor Balance</h1>
     </div>
 
-    <div class="container-fluid">
-        <div class="row">
-        <h5 class="card-title">TEST ANGKA = 50000</h5>
-            <?php foreach ($datas as $data) : ?> //change to check saldo utk ditarik
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><?php echo $data['namaKelas']; ?></h5>
-                        <p class="card-text"><?php echo $data['deskripsiKelas']; ?></p>
-                    </div>
+    <div class="container-fluid d-flex justify-content-center align-items-center my-4">
+        <div class="container mx-auto rounded-4 montserratBold" style="height: 10%; width: 50%; background-color: rgb(200, 200, 200)">
+            <div class="container-fluid row justify-content-center align-items-center">
+                <div class="col-2 text-center text-primary">
+                    <i class="bi bi-wallet2" style="font-size: 40px"></i>
                 </div>
-            <?php endforeach; ?>
-        </div>
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Jumlah saldo yang kamu miliki:</h5>
-                    <form method="post" action="">
-                        <input type="number" class="form-control" name="withdrawalAmount" placeholder="Saldo yang ingin ditarik" aria-label="withdrawalAmount" aria-describedby="basic-addon2">
-                        <p class="card-text"></p>
-                        <button class="btn btn-warning position-relative end-0" type="submit">Tarik</button>
-                    </form>
+                <!-- akses tutor balance disini -->
+                <div class="col-7 text-center text-primary">
+                    <h1 class="montserratSemiBold m-0">Rp.304.000</h1>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Masukkan nominal yang ingin diambil</h5>
+                        <form method="post" action="" enctype="">
+                            <input type="text" class="form-control" name="withdrawBalance" placeholder="100000" aria-label="MessageKomplain" aria-describedby="basic-addon2">
+                            <button class="btn btn-primary position-relative end-0 mt-3" type="submit" name="submit">Withdraw</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
