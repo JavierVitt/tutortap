@@ -125,3 +125,33 @@ class User{
         return $saldo[0]['saldo'];
     }
 }
+class Order{
+    static function addOrder($idUser, $idKelas, $durasi, $totalHarga){
+        global $conn;
+
+        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) VALUES ('', " . $idUser . ", " . $idKelas . ", '', " . $durasi . ", '', 1, '" . $totalHarga . "', '')";
+        mysqli_query($conn, $syn);
+
+        $result = mysqli_query($conn, "SELECT LAST_INSERT_ID() as id");
+        $row = mysqli_fetch_assoc($result);
+        $idOrder = $row['id'];
+        return $idOrder;
+        
+    }
+
+    static function setVA($idOrder, $va){
+        global $conn;
+
+        $syn = "UPDATE `order` SET vaOrder = '$va' WHERE idOrder = $idOrder";
+        mysqli_query($conn, $syn);
+    }
+
+    static function getVA($idOrder){
+        global $conn;
+
+        $syn = "SELECT * FROM `order` WHERE idOrder = $idOrder";
+        $result = query($syn);
+
+        return $result[0]['vaOrder'];
+    }
+}

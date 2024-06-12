@@ -23,13 +23,13 @@ else{
 
 
 function validasiPesanan(){
-    global $idUser, $idKelas, $durasi, $totalHarga;
+    global $idUser, $idKelas, $durasi, $totalHarga, $idOrder;
     $syntax = "SELECT * FROM KELAS WHERE idKelas = $idKelas";
     $kelas = query($syntax);
     $totalHarga = $durasi * $kelas[0]['hargaKelas'];
-    $syntax = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) VALUES ('', " . $idUser . ", " . $idKelas . ", '', " . $durasi . ", '', 0, '" . $totalHarga . "', '')";
-    query($syntax);
 
+    $order = new Order();
+    $idOrder = $order->addOrder($idUser, $idKelas, $durasi, $totalHarga);
 }
 
 ?>
@@ -125,7 +125,7 @@ function validasiPesanan(){
                 <h3 class="montserratBold">Gopay</h3>
             </div>
             <div class="container col-4 text-center" style="text-decoration:none; color:inherit;">
-                <a href="pembayaranBCA.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&harga=<?php echo $kelas[0]['hargaKelas'] ?>" style="text-decoration:none; color:inherit;">
+                <a href="pembayaranBCA.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&harga=<?php echo $kelas[0]['hargaKelas'] ?>&idOrder=<?php echo $idOrder; ?>" style="text-decoration:none; color:inherit;">
                     <img src="https://logos-download.com/wp-content/uploads/2017/03/BCA_logo_Bank_Central_Asia.png" alt="" style="height: 100px; width: 45%; object-fit: contain;">
                     <h3 class="montserratBold">BCA</h3>
                 </a>

@@ -3,6 +3,7 @@ require_once "../functions.php";
 $idKelas = $_GET['classId'];
 $idUser = $_GET['id'];
 $harga = $_GET['harga'];
+$idOrder = $_GET['idOrder'];
 $syn = "SELECT * FROM USER WHERE userId = $idUser";
 $users = query($syn);
 $syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas"; 
@@ -28,10 +29,15 @@ function generateCode() {
 }
 
 function requestVAToBank($harga){
-    $vaCode = generateCode();
+    global $idOrder;
+    $vaOrder = generateCode();
+    $order = new Order();
+
+    $order->setVA($idOrder, $vaOrder);
 }
 
-$virtualAccount = requestVAToBank($harga);
+$order = new Order();
+$virtualAccount = $order->getVA($idOrder);
 
 
 ?>
