@@ -3,12 +3,16 @@
 
     $idUser = $_GET['id'];
 
+    $user = new User();
+
+    $saldo = $user->getSaldo($idUser);
+
     if( isset($_POST['submit']) ){
         $request = $_POST['withdrawBalance'];
 
-        $user = new User();
         $user->checkSaldo($idUser, $request);
     }
+
 ?>
 
 
@@ -112,6 +116,10 @@
             padding-left: 15px;
             padding-right: 15px;
         }
+
+        input::placeholder {
+            color: #d1d1d1;
+        }
     </style>
 </head>
 
@@ -145,7 +153,7 @@
                 </div>
                 <div class="col-9 text-start text-black">
                     <h2 class="montserratRegular mb-0">Your Balance</h2>
-                    <p class="montserratSemiBold" style="font-size: 1.5rem; margin-bottom: 0;">Rp. 304,000</p>
+                    <p class="montserratSemiBold" style="font-size: 1.5rem; margin-bottom: 0;">Rp. <?= $saldo; ?></p>
                 </div>
             </div>
         </div>
@@ -158,7 +166,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Masukkan nominal yang ingin diambil</h5>
                         <form method="post" action="" enctype="">
-                            <input type="text" class="form-control" name="withdrawBalance" placeholder="100000" aria-label="MessageKomplain" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" name="withdrawBalance" placeholder="100000" aria-label="MessageKomplain" aria-describedby="basic-addon2" autocomplete="off" autofocus>
                             <button class="btn btn-primary position-relative end-0 mt-3" type="submit" name="submit">Withdraw</button>
                         </form>
                     </div>
