@@ -20,7 +20,7 @@ class Kelas
 {
     static function getAllKelas()
     {
-        $syntax = "SELECT * FROM KELAS";
+        $syntax = "SELECT * FROM KELAS WHERE status === 1";
         $datas = query($syntax);
         return $datas;
     }
@@ -40,7 +40,7 @@ class Complain{
 
         move_uploaded_file($tmpName, '../complain_picture/' . $namaFileBaru);
 
-        return $namaGambar;
+        return $namaFileBaru;
     }
     static function complainOrder($idOrder, $data, $files){
 
@@ -55,5 +55,26 @@ class Complain{
 
         $syntax = "INSERT INTO COMPLAIN VALUES ('', $idOrder, '$complainMessage', '$gambar',2020)";
         mysqli_query($conn, $syntax);
+    }
+    static function getAllComplain(){
+        $syntax = "SELECT * FROM COMPLAIN";
+        $result = query($syntax);
+
+        return $result;
+    }
+}
+class Admin{
+    static function process($complainId, $status){
+        global $conn;
+        if($status == 0){
+            //Ini approve
+            $syn = "DELETE FROM COMPLAIN WHERE complainId = $complainId";
+            mysqli_query($conn, $syn);
+        }elseif($status == 1){
+            //Ini delete
+            $syn = "DELETE FROM COMPLAIN WHERE complainId = $complainId";
+            mysqli_query($conn, $syn);
+        }
+        echo "<script>document.location.href = '../views/AdminApproval.php'</script>";
     }
 }
