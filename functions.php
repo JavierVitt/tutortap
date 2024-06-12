@@ -30,6 +30,11 @@ class Kelas
         $kelass = query($syntax);
         return $kelass;
     }
+    static function getKelasById($idClass){
+        $syntax = "SELECT * FROM KELAS WHERE idKelas = $idClass";
+        $result  = query($syntax);
+        return $result;
+    }
 }
 class Complain{
     static function upload($data){
@@ -153,5 +158,20 @@ class Order{
         $result = query($syn);
 
         return $result[0]['vaOrder'];
+    }
+    static function showAllKelas($idUser){
+        $syn = "SELECT * FROM `order` WHERE idUser = $idUser";
+        
+        $result = query($syn);
+        return $result;
+    }
+}
+class Chat{
+    static function addChat($senderId, $receiverId, $chat){
+        global $conn;
+        $syn = "INSERT INTO CHAT (senderId, receiverId, pesan, waktu) VALUES ('$senderId', '$receiverId', '$chat', CURRENT_TIMESTAMP)";
+        mysqli_query($conn, $syn);
+
+        echo "<script>document.location.href='../throw/chat.php?senderId=$senderId&receiverId=$receiverId'</script>";
     }
 }
