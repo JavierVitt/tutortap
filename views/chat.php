@@ -38,64 +38,96 @@ if (isset($_POST['submit'])) {
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
     .bg-ouryellow {
-      background-color: #FFCC01;
-    }
+            background-color: #FFCC01;
+        }
 
-    .price-text {
-      font-family: Arial, sans-serif;
-      /* Memilih font yang jelas dan mudah dibaca */
-      font-size: 24px;
-      /* Ukuran teks yang lebih besar */
-      color: #007bff;
-      /* Warna biru yang menonjol */
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-      /* Bayangan teks untuk memberikan sedikit dimensi */
-      transition: all 0.3s ease;
-      /* Efek transisi halus saat dihover */
-    }
+        .card-body {
+            position: relative;
+            height: 400px;
+            overflow-y: auto;
+            padding: 2rem;
+        }
 
-    .price-text:hover {
-      transform: scale(1.1);
-      /* Efek perbesaran saat dihover */
-      color: #0056b3;
-      /* Warna biru yang lebih gelap saat dihover */
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      /* Bayangan teks yang lebih kuat saat dihover */
-    }
+        .navbar h1 {
+            margin: 0;
+            color: #fff;
+            font-weight: bold;
+        }
 
-    .card-body {
-      position: relative;
-      height: 400px;
-      overflow-y: auto;
-      /* Menambahkan overflow-y untuk scrolling vertikal */
-    }
-  </style>
+        .btn-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-icon i {
+            transition: transform 0.2s;
+        }
+
+        .btn-icon:hover i {
+            transform: scale(1.2);
+        }
+
+        .container-fluid.text-center.mt-5 h1 {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card {
+            margin-top: 0;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            border: 2px solid #FFCC01;
+            margin-bottom: 1rem;
+        }
+
+        .btn-warning {
+            background-color: #FFCC01;
+            border: none;
+            color: #343a40;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-warning:hover {
+            background-color: #e6b800;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="navbar w-100 bg-ouryellow ">
-    <div class="container-fluid d-flex justify-content-between">
-      <div class="input-group w-75">
-        <h1>Your Classes</h1>
-      </div>
-      <div class="container w-25 row">
-        <div class="container col-3">
-          <i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a></th>
+  <<div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:100px; background-color:black" alt="">
+            </a>
+    
+            <!-- Navigation Icons -->
+            <div class="navbar-nav ms-auto">
+                <a class="btn-icon me-5" href="#"><i class="bi bi-person-circle text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-filter text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon me-5" href="#"><i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a>
+                <a class="btn-icon" href="#"><i class="bi bi-list text-white" style="font-size: 30px;"></i></a>
+            </div>
         </div>
-        <div class="container col-3">
-          <i class="bi bi-filter text-white" style="font-size: 30px;"></i></a></th>
-        </div>
-        <div class="container col-3">
-          <i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a></th>
-        </div>
-        <div class="container col-3">
-          <i class="bi bi-list text-white" style="font-size: 30px;"></i></a></th>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <section style="background-color: #eee;">
+  <section style="background-color: #ffffff;">
     <div class="container py-5">
 
       <div class="row d-flex justify-content-center">
