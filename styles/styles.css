@@ -36,3 +36,8 @@
     font-weight:900;
     font-style: normal;
 }
+
+a {
+    color:inherit;
+    text-decoration: none;
+}

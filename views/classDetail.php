@@ -3,10 +3,22 @@ require_once "../functions.php";
 $idKelas = $_GET['classId'];
 $idUser = $_GET['id'];
 
+$syn = "SELECT * FROM USER WHERE userId = $idUser";
+$users = query($syn);
+$syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas"; 
+$kelas = query($syn);
+
+if(count($users) == 0 || count($kelas) == 0){
+    // echo "<script>document.location.href = 'homeLearner.php?id=$idUser'</script>";
+    echo "<script>document.location.href = 'error.php?status=queryError'</script>";
+}
+
+// if($users[0]['status'] == 2){
+//     echo "<script>document.location.href = 'error.php?status=suspiciousUser'</script>";
+// }
+
 $syntax = "SELECT * FROM KELAS where idKelas = $idKelas";
 $kelas = query($syntax);
-
-echo $kelas['namaKelas'];
 
 ?>
 
@@ -46,103 +58,142 @@ echo $kelas['namaKelas'];
 
     <body>
         <div class="navbar w-100 bg-ouryellow ">
-            <div class="container-fluid d-flex justify-content-between">
-                <div class="input-group w-75">
-                    <input type="text" class="form-control" placeholder="Search Classes"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Search</button>
-                    </div>
+        <div class="container-fluid d-flex justify-content-between">
+            <div class="container w-25 d-flex justify-content-center">
+                <a href="">
+                    <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
+                </a>
+            </div>
+            <div class="input-group w-50">
+                <input type="text" class="form-control montserratRegular" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-dark montserratSemiBold" type="button">Search</button>
                 </div>
+            </div>
 
-                <div class="container w-25 row">
-                    <div class="container col-3">
-                        <i class="bi bi-envelope-fill text-white" style="font-size: 30px;"></i></a></th>
-                    </div>
-                    <div class="container col-3">
-                        <i class="bi bi-filter text-white" style="font-size: 30px;"></i></a></th>
-                    </div>
-                    <div class="container col-3">
-                        <i class="bi bi-cart-fill text-white" style="font-size: 30px;"></i></a></th>
-                    </div>
-                    <div class="container col-3">
-                        <i class="bi bi-list text-white" style="font-size: 30px;"></i></a></th>
-                    </div>
+            <div class="container w-25 px-5 row" style="color:black;">
+                <div class="container col-3">
+                    <a href="">
+                    <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
+                    </a>
+                </div>
+                <div class="container col-3">
+                    <a href="">
+                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
+                </div>
+                <div class="container col-3">
+                    <a href="">
+                    <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
+                </div>
+                <div class="container col-3">
+                    <a href="">
+                    <i class="bi bi-list text-dark" style="font-size: 30px;"></i></a></th>
+                    </a>
                 </div>
             </div>
         </div>
-
+    </div>
         <div class="container-fluid text-center mt-5 montserratBold ">
-            <h1 class="montserratBold pb-3">Class Name</h1>
+            <h1 class="montserratBold pb-3">Class Detail</h1>
         </div>
 
         <div class="container-fluid">
             <div class="row">
                 <div class="card col-12" >
-                    <img class="card-img-top py-3" src="../images/<?php echo $kelas['fotoKelas']; ?>"
+                    <div class="container-fluid d-flex justify-content-center">
+                    <img class="card-img-top py-3" src="../images/<?php echo $kelas[0]['fotoKelas']; ?> " style="height: 500px; width: 75%; object-fit: cover;"
                         alt="Card image cap">
-                    <div class="card-body">
-
-                        <!-- hapus ini nanti -->
-                        <h5 class="card-title montserratBold py-3" style="font-size:35px">
-                            <?php echo $kelas['namaKelas']; ?>
-                        </h5>
-
-
-                        <p class="card-text">
-                            <?php echo $kelas['deskripsiKelas']; ?>
-                        </p>
-                        <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp.
-                            <?php echo $kelas['hargaKelas']; ?>
-                        </p>
-
-
-                        <!-- REVIEW BELUM! -->
-                        <div class="card-text" style="display: flex; align-items: center;">
-                            <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
-                            <span style="margin-left: 10px;">5.0 - 35 reviews</span>
-                        </div>
-
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="flex-shrink-0">
-                                <img src="../images/javier.png"
-                                alt="Generic placeholder image" class="img-fluid rounded-circle border border-dark border-3"
-                                style="width: 70px;">
-                            </div>
-                            <div class="flex-grow-1 ms-3 py-5">
-                                <div class="d-flex flex-row align-items-center mb-2">
-                                
-                                <p class="mb-0 me-2 montserratBold">Javier Vittorio</p>
-                                <ul class="mb-0 list-unstyled d-flex flex-row" style="color: #1B7B2C;">
-                                    <li>
-                                    <i class="bi bi-star-fill" style="color: #FFCC01;"></i>
-                                    </li>
-                                </ul>
-                                </div>
-                                <div>
-                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
-                                    data-mdb-ripple-color="dark">+ Follow</button>
-                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
-                                    data-mdb-ripple-color="dark">See profile</button>
-                                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
-                                    data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                    <div class="card-body d-flex justify-content-center">
+                        <div class="container" style="width:75%;">
+
+                            <!-- hapus ini nanti -->
+                            <h5 class="card-title montserratBold py-3" style="font-size:35px">
+                                <?php echo $kelas[0]['namaKelas']; ?>
+                            </h5>
+
+
+                            <p class="card-text">
+                                <?php echo $kelas[0]['deskripsiKelas']; ?>
+                            </p>
+                            <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp.
+                                <?php echo $kelas[0]['hargaKelas']; ?>/
+                                <?php echo $kelas[0]['durasiKelas']; ?>
+                            </p>
+
+
+                            <!-- REVIEW BELUM! -->
+                            <div class="card-text" style="display: flex; align-items: center;">
+                                <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
+                                <span style="margin-left: 10px;">5.0 - 35 reviews</span>
+                            </div>
+
+                            <!-- tutor section -->
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="flex-shrink-0">
+                                    <img src="../images/javier.png"
+                                    alt="Generic placeholder image" class="img-fluid rounded-circle border border-dark border-3"
+                                    style="width: 70px;">
+                                </div>
+                                <div class="flex-grow-1 ms-3 py-5">
+                                    <div class="d-flex flex-row align-items-center mb-2">
+                                    
+                                    <p class="mb-0 me-2 montserratBold">Javier Vittorio</p>
+                                    <ul class="mb-0 list-unstyled d-flex flex-row" style="color: #1B7B2C;">
+                                        <li>
+                                        <i class="bi bi-star-fill" style="color: #FFCC01;"></i>
+                                        </li>
+                                    </ul>
+                                    </div>
+                                    <div>
+                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                        data-mdb-ripple-color="dark">+ Follow</button>
+                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                        data-mdb-ripple-color="dark">See profile</button>
+                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
+                                        data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        
+                    </div>
+
+                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
+                         <div class="input-group w-25">
+                            <input type="text" class="form-control montserratRegular text-center" placeholder="Input" aria-label="Recipient's username" aria-describedby="basic-addon2" style="border-width: 3px; border-color:black;font-size:30px; color:black;">
+                            
+                            <div class="input-group-append mt-2">
+                                <h1 style="font-size:40px;" class=""><?php echo $kelas[0]['durasiKelas']; ?></h1>
+                            </div>
+                        </div>
+                    </div>  
+
+                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
+                        <button type="button" class="btn btn-outline-success my-3 w-100" style="font-size: 25px;" onclick="redirectToPembayaran()">
+                            <h1>Order Class</h1>
+                        </button>
+                        <script>
+                                function redirectToPembayaran(){
+                                    var inputValue = document.querySelector('.form-control.montserratRegular.text-center').value;
+                                    console.log(inputValue);
+                                    window.location.href='pembayaranKelas.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&durasi='+inputValue;
+                                }
+                                var inputValue = document.querySelector('.form-control.montserratRegular.text-center').value;
+                                console.log(inputValue);
+                        </script>
+                    </div>  
+
+                   
                 </div>
             </div>
         </div>
 
-        <!-- <div class="card mb-3">
-            <img class="card-img-top" src="../images/20221003_133232.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.
-                    This content is a little bit longer.</p>
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-            </div>
-        </div> -->
+        
 
 
         <div class="container-fluid bg-ouryellow d-flex justify-content-center pt-3">
