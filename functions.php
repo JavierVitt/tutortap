@@ -134,7 +134,12 @@ class Order{
     private $conn;
     private $idOrder;
 
-    public function __construct($conn, $idOrder) {
+    // public function __construct($conn, $idOrder) {
+    //     $this->conn = $conn;
+    //     $this->idOrder = $idOrder;
+    // }
+
+    public function __construct($conn = null, $idOrder = null) {
         $this->conn = $conn;
         $this->idOrder = $idOrder;
     }
@@ -148,7 +153,7 @@ class Order{
     static function addOrder($idUser, $idKelas, $durasi, $totalHarga){
         global $conn;
 
-        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) VALUES ('', " . $idUser . ", " . $idKelas . ", '', " . $durasi . ", '', 1, '" . $totalHarga . "', '')";
+        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) VALUES ('', " . $idUser . ", " . $idKelas . ", '', " . $durasi . ", '', 0, '" . $totalHarga . "', '')";
         mysqli_query($conn, $syn);
 
         $result = mysqli_query($conn, "SELECT LAST_INSERT_ID() as id");
