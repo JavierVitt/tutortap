@@ -1,67 +1,27 @@
 <?php
 require_once "../functions.php";
 
-$idOrder = (int)$_GET['idOrder'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the complaint message from the form data
+    $complainMessage = $_POST['complainMessage'];
 
-if(isset($_POST['submit'])){
-    $complain = new Complain();
-    $complain->complainOrder($idOrder, $_POST, $_FILES);
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Oops...",
-                        text: "Complain Accepted",
-                        footer: \'<a href="#"></a>\'
-                    });
-                });
-            </script>';
+    // Get the order id
+    $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
+    $orderResult = query($orderQuery);
+    if (count($orderResult) > 0) {
+        $idOrder = $orderResult[0]['idOrder'];
+    } else {
+        die("Error: No orders found for class with idClass of 1.");
+    }
+
+    // Create an Order object
+    $order = new Order($conn, $idOrder);
+
+    // Create a complaint and change order status
+    $order->createComplain($complainMessage);
+    $order->changeOrderStatus();
 }
 
-
-$syntax = "SELECT * FROM KELAS";
-$datas = query($syntax);
-$syntaxComplain = "SELECT * FROM KELAS";
-$complaindatum = query($syntax);
-
-// Check if form is submitted
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     // Get the complaint message from the form data
-//     $complainMessage = $_POST['complainMessage'];
-
-//     // Get the uploaded picture
-//     $complainPicture = $_FILES['complainPicture'];
-
-//     //TESTING IDADMIN = 2020 ATAU YANG PERTAMA MUNCUL. UBAH JADI ID ADMIN [0] SORT BY NUMBER OF COMPLAINTS ON HAND
-//     $adminQuery = "SELECT adminId FROM admin LIMIT 1";
-//     $adminResult = query($adminQuery);
-//     $adminId = $adminResult[0]['adminId'];
-
-//     //TESTING IDCLASS = 1
-//     $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
-//     $orderResult = query($orderQuery);
-//     if (count($orderResult) > 0) {
-//         $idOrder = $orderResult[0]['idOrder'];
-//     } else {
-//         die("Error: No orders found for class with idClass of 1.");
-//     }
-
-//     $idOrder = $orderResult[0]['idOrder'];
-
-//     // Insert the new complaint into the "complain" table
-//     $query = "INSERT INTO complain (complainMessage, adminId, idOrder) VALUES (?, ?, ?)";
-//     $stmt = mysqli_prepare($conn, $query);
-//     mysqli_stmt_bind_param($stmt, 'sii', $complainMessage, $adminId, $idOrder);
-//     mysqli_stmt_execute($stmt);
-
-//     // Update the statusOrder of the order to '3'
-//     $updateQuery = "UPDATE `order` SET `statusOrder` = 3 WHERE `idOrder` = ?";
-//     $stmt = mysqli_prepare($conn, $updateQuery);
-//     mysqli_stmt_bind_param($stmt, 'i', $idOrder);
-//     mysqli_stmt_execute($stmt);
-
-//     echo "Complaint submitted successfully.";
-// }
 
 
 ?>
@@ -202,7 +162,6 @@ $complaindatum = query($syntax);
                         <h5 class="card-title">Form Pengajuan</h5>
                         <form method="post" action="" enctype="">
                             <input type="text" class="form-control" name="complainMessage" placeholder="Tuliskan masalah yang kamu alami" aria-label="MessageKomplain" aria-describedby="basic-addon2" autocomplete="off" autofocus>
-                            <input type="file" name="complainPicture">
                             <p class="card-text"></p>
                             <button class="btn btn-primary position-relative end-0 mt-0" type="submit" name="submit">Submit</button>
                         </form>
