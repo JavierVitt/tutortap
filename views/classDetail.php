@@ -5,7 +5,7 @@ $idUser = $_GET['id'];
 
 $syn = "SELECT * FROM USER WHERE userId = $idUser";
 $users = query($syn);
-$syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas"; 
+$syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas";
 $kelas = query($syn);
 
 if(count($users) == 0 || count($kelas) == 0){
@@ -152,7 +152,7 @@ $kelas = query($syntax);
                                         data-mdb-ripple-color="dark">+ Follow</button>
                                     <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
                                         data-mdb-ripple-color="dark">See profile</button>
-                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
+                                    <button onclick="window.location.href='chat.php?id=1&receiverId=9999'" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
                                         data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
                                     </div>
                                 </div>

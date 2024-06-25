@@ -263,6 +263,10 @@ $results = $order->showAllKelas($idUser);
                         <?php endif; ?>
                     </div>
                 </div>
+                <button class="btn btn-danger mx-4 my-3" onclick="window.location.href = 'complainForm.php?orderId=<?= $result['idOrder'];?>'">Complain</button>
+            </div>
+            <div class="container">
+                
             </div>
         <?php endforeach; ?>
     </div>

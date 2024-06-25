@@ -1,23 +1,20 @@
 <?php
 require_once "../functions.php";
 
+$idOrder = $_GET['orderId'];
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the complaint message from the form data
+    //GET MESSAGE
     $complainMessage = $_POST['complainMessage'];
 
-    // Get the order id
-    $orderQuery = "SELECT `idOrder` FROM `order` WHERE `idClass` = 1 LIMIT 1";
-    $orderResult = query($orderQuery);
-    if (count($orderResult) > 0) {
-        $idOrder = $orderResult[0]['idOrder'];
-    } else {
-        die("Error: No orders found for class with idClass of 1.");
-    }
+    //GET VAR ID
+    $idOrder = $_GET['orderId'];
 
-    // Create an Order object
+    //TEMPDATA
     $order = new Order($conn, $idOrder);
 
-    // Create a complaint and change order status
+    //CEK SQEUENCE
     $order->createComplain($complainMessage);
     $order->changeOrderStatus();
 }
