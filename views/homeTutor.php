@@ -110,11 +110,11 @@ $saldo = $user->getSaldo($idUser);
             </form>
 
             <div class="container w-25 px-5 row" style="color:black;">
-                <div class="container col-3">
+                <!-- <div class="container col-3">
                     <a href="">
                     <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
                     </a>
-                </div>
+                </div> -->
                 <div class="container col-3">
                     <a href="">
                     <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
@@ -143,10 +143,13 @@ $saldo = $user->getSaldo($idUser);
 
                 <!-- akses tutor balance disini -->
                 <div class="col-7 text-center text-primary d-flex justify-content-center align-items-center">
-                    <h1 class="montserratSemiBold"><?php echo $saldo; ?></h1>
+                    <h1 class="montserratSemiBold">Rp. <?php echo $saldo; ?></h1>
                 </div>
-                <div class="col-3 text-center d-flex justify-content-center align-items-center">
+                <!-- <div class="col-3 text-center d-flex justify-content-center align-items-center">
                     <button class="btn btn-outline-primary montserratBold" style="font-size:20px;" onclick="window.location.href='WithdrawBalance.php?id=<?=$idUser;?>'">Withdraw</button>
+                </div> -->
+                <div class="col-3 text-center d-flex justify-content-center align-items-center">
+                    <button class="btn btn-outline-secondary montserratBold text-muted" style="font-size:20px; pointer-events: none; opacity: 0.65;" disabled>Withdraw</button>
                 </div>
             </div>
         </div>
