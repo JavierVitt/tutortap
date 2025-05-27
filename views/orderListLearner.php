@@ -54,8 +54,10 @@ $results = $order->showAllKelas($idUser);
 
         .back-button:hover {
             text-decoration: underline;
-        }        .panel-order {
-            margin-top: 20px;
+        }        
+        
+        .panel-order {
+            margin-top: 0px;
             border: 1px solid #e0e0e0;
             border-radius: 12px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
@@ -66,8 +68,8 @@ $results = $order->showAllKelas($idUser);
         }
         
         .panel-order:hover {
-            transform: translateY(-3px);
-            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.1);
+            /* transform: translateY(-3px); */
+            /* box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.1); */
         }
 
         .panel-order .panel-heading {
@@ -233,8 +235,8 @@ $results = $order->showAllKelas($idUser);
         }
         
         .schedule-display:hover {
-            background-color: #fff3cd;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            /* background-color: #fff3cd; */
+            /* box-shadow: 0 3px 6px rgba(0,0,0,0.1); */
         }
     </style>
 </head>
@@ -268,20 +270,21 @@ $results = $order->showAllKelas($idUser);
             $hasilKelas = $kelas->getKelasById($idKelas);
             // var_dump($hasilKelas[0]);
             ?>
-            <div class="panel panel-default panel-order">                <div class="panel-body">
+            <div class="panel panel-default panel-order">                
+                <div class="panel-body">
                     <!-- Order Content -->
                     <div class="row mt-3">
                         <!-- Class Image -->
                         <div class="col-md-3 mb-3 mb-md-0">
-                            <div class="class-image-container">
+                            <div class="class-image-container" style="height: 150px;">
                                 <img src="../images/<?php echo $hasilKelas[0]['fotoKelas']; ?>" 
                                      alt="<?php echo $hasilKelas[0]['namaKelas']; ?>" 
-                                     class="img-fluid rounded class-thumbnail">
+                                     class="img-fluid rounded">
                             </div>
                         </div>
                         
                         <!-- Class Info -->
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <h5 class="fw-bold"><?php echo $hasilKelas[0]['namaKelas']; ?></h5>                            <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-clock-fill me-2 text-secondary"></i>
                                 <span><?php echo $result["jumlahDurasi"]; ?> hour</span>
@@ -289,7 +292,21 @@ $results = $order->showAllKelas($idUser);
                             <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-cash-stack me-2 text-secondary"></i>
                                 <span class="fw-bold">Rp <?php echo number_format($result["subtotalOrder"], 0, ',', '.'); ?></span>
-                            </div>                            <!-- Schedule/jadwalKelas display -->
+                            </div>                            
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
+                                <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
+                            </div>
+                            
+                            
+
+                            
+                            
+                            
+                        </div><!-- Order ID and Date (if available) -->
+
+                        <div class="col-md-4">
+                            <!-- Schedule/jadwalKelas display -->
                             <?php if(isset($result['jadwalKelas']) && !empty($result['jadwalKelas'])): ?>
                             <div class="schedule-display d-flex align-items-center">
                                 <i class="bi bi-calendar-event-fill me-2 text-primary"></i>
@@ -301,17 +318,17 @@ $results = $order->showAllKelas($idUser);
                                 </div>
                             </div>
                             <?php endif; ?>
-                            <div class="d-flex align-items-center mt-2">
-                                <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
-                                <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
-                            </div><?php if(!empty($result['catatanOrder'])): ?>
-                            <div class="order-note mt-2">
-                                <i class="bi bi-quote me-2"></i>
-                                <?php echo $result['catatanOrder']; ?>
-                            </div>
+
+                            <?php if(!empty($result['catatanOrder'])): ?>                                
+                                <div class="order-note mt-2">
+                                    <i class="bi bi-quote me-2"></i>
+                                    <?php echo $result['catatanOrder']; ?>
+                                </div>
                             <?php endif; ?>
-                        </div><!-- Order ID and Date (if available) -->
-                        <div class="col-md-4 text-end">
+                        </div>
+
+
+                        <div class="col-md-2 text-end">
                             <div class="order-details">
                                 <div class="text-muted order-id">Order ID: #<?php echo $result['idOrder']; ?></div>
                                 

@@ -185,6 +185,19 @@ CREATE TABLE `user_rating_result` (
   `totalRatingCount` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wishlist`
+--
+
+CREATE TABLE `wishlist` (
+  `wishlistId` int(16) NOT NULL,
+  `userId` int(16) NOT NULL,
+  `classId` int(16) NOT NULL,
+  `dateAdded` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -269,6 +282,14 @@ ALTER TABLE `user_rating_result`
   ADD PRIMARY KEY (`userRatingResultId`);
 
 --
+-- Indexes for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD PRIMARY KEY (`wishlistId`),
+  ADD KEY `wishlist_userId` (`userId`),
+  ADD KEY `wishlist_classId` (`classId`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -339,6 +360,12 @@ ALTER TABLE `user_rating_result`
   MODIFY `userRatingResultId` int(16) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  MODIFY `wishlistId` int(16) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -394,6 +421,13 @@ ALTER TABLE `order`
 ALTER TABLE `user_rating`
   ADD CONSTRAINT `pemberiId` FOREIGN KEY (`pemberiId`) REFERENCES `user` (`userId`),
   ADD CONSTRAINT `penerimaId` FOREIGN KEY (`penerimaId`) REFERENCES `user_rating_result` (`userRatingResultId`);
+
+--
+-- Constraints for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD CONSTRAINT `wishlist_userId` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`),
+  ADD CONSTRAINT `wishlist_classId` FOREIGN KEY (`classId`) REFERENCES `kelas` (`idKelas`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

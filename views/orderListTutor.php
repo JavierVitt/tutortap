@@ -57,8 +57,10 @@ $results = $order->showAllKelasByTutor($idUser);
 
         .back-button:hover {
             text-decoration: underline;
-        }        .panel-order {
-            margin-top: 20px;
+        }        
+        .panel-order {
+            margin-top: 0px;
+            margin-bottom: 0px;
             border: 1px solid #e0e0e0;
             border-radius: 12px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
@@ -81,6 +83,7 @@ $results = $order->showAllKelasByTutor($idUser);
         }        .panel-order .panel-body {
             padding: 20px;
             position: relative;
+            min-height: 280px;
         }
 
         .panel-order .panel-footer {
@@ -100,17 +103,16 @@ $results = $order->showAllKelasByTutor($idUser);
             right: 15px;
             z-index: 1;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-          /* Status badge styling */
+        }        /* Status badge styling */
         .status-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 12px;
             font-size: 10px;
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
@@ -146,11 +148,11 @@ $results = $order->showAllKelasByTutor($idUser);
         .label-done, .status-badge.label-done {
             background-color: #198754;
             color: white;
-        }
-          /* Order details styling */
+        }        /* Order details styling */
         .order-details {
             position: relative;
             z-index: 0;
+            height: 100%;
         }
         
         .order-id {
@@ -166,8 +168,7 @@ $results = $order->showAllKelasByTutor($idUser);
         .order-item:last-child {
             margin-bottom: 15px;
         }
-        
-        /* Additional Order Styling */
+          /* Additional Order Styling */
         .fw-bold {
             font-weight: 600 !important;
         }
@@ -180,7 +181,8 @@ $results = $order->showAllKelasByTutor($idUser);
         .bi-bag-x {
             opacity: 0.5;
         }
-          /* Responsive adjustments */
+        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .col-md-4.text-end {
                 text-align: left !important;
@@ -188,13 +190,36 @@ $results = $order->showAllKelasByTutor($idUser);
             }
         }
         
-        /* Class image styling */
+        /* Info item styling */
+        .info-item {
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        
+        .info-item:hover {
+            transform: translateX(3px);
+        }
+        
+        /* Action buttons container */
+        .action-buttons-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+          /* Content alignment fixes */
+        .order-content-row {
+            display: flex;
+            align-items: stretch;
+            min-height: 240px;
+        }
+          /* Class image styling */
         .class-image-container {
             width: 100%;
-            height: 100px;
+            height: 200px;
             overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         
         .class-thumbnail {
@@ -203,36 +228,39 @@ $results = $order->showAllKelasByTutor($idUser);
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-          .class-image-container:hover .class-thumbnail {
+        
+        .class-image-container:hover .class-thumbnail {
             transform: scale(1.05);
         }
         
         @media (max-width: 768px) {
             .class-image-container {
-                height: 140px;
+                height: 180px;
                 margin-bottom: 15px;
             }
-        }
-          /* Order note styling */
+        }        /* Order note styling */
         .order-note {
             font-style: italic;
             font-size: 0.9rem;
             background-color: #f8f9fa;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border-radius: 8px;
             border-left: 3px solid #FFCC01;
-            margin-top: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            width: 100%;
         }
-        
-        /* Schedule display styling */
+          /* Schedule display styling */
         .schedule-display {
             background-color: #fff8e1;
             border-left: 5px solid #ffc107;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-top: 10px;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
             font-weight: bold;
             transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            width: 100%;
         }
         
         .schedule-display:hover {
@@ -310,143 +338,159 @@ $results = $order->showAllKelasByTutor($idUser);
             $idStudent = $result['idUser'];
             $student = User::getUserById($idStudent);
             // var_dump($hasilKelas[0]);
-            ?>            <div class="panel panel-default panel-order">
-                <div class="panel-body">
-                    <!-- Order Content -->
-                    <div class="row mt-3">
+            ?>            
+            <div class="panel panel-default panel-order">                
+                <div class="panel-body">                    <!-- Order Content -->
+                    <div class="row order-content-row">
                         <!-- Class Image -->
-                        <div class="col-md-3 mb-3 mb-md-0">
-                            <div class="class-image-container">
+                        <div class="col-md-3 mb-3 mb-md-0 d-flex align-content-center">
+                            <div class="class-image-container h-100">
                                 <img src="../images/<?php echo $hasilKelas[0]['fotoKelas']; ?>" 
                                      alt="<?php echo $hasilKelas[0]['namaKelas']; ?>" 
-                                     class="img-fluid rounded class-thumbnail">
+                                     class="img-fluid rounded h-100 w-100 object-fit-fill">
                             </div>
                         </div>
                         
                         <!-- Class Info -->
                         <div class="col-md-3">
-                            <h5 class="fw-bold"><?php echo $hasilKelas[0]['namaKelas']; ?></h5>
-                            
-                            <!-- Student Info - New section for tutor view -->
-                            <div class="d-flex align-items-center mt-2">
-                                <i class="bi bi-person-fill me-2 text-secondary"></i>
-                                <span class="fw-bold">Student: <?php echo $student['nama']; ?></span>
-                            </div>
-                              <div class="d-flex align-items-center mt-2">
-                                <i class="bi bi-clock-fill me-2 text-secondary"></i>
-                                <span><?php echo $result["jumlahDurasi"]; ?> hour</span>
-                            </div>
-                            <div class="d-flex align-items-center mt-2">
-                                <i class="bi bi-cash-stack me-2 text-secondary"></i>
-                                <span class="fw-bold">Rp <?php echo number_format($result["subtotalOrder"], 0, ',', '.'); ?></span>
-                            </div>                            <!-- Schedule/jadwalKelas display with standout styling -->
-                            <?php if(isset($result['jadwalKelas']) && !empty($result['jadwalKelas'])): ?>
-                            <div class="schedule-display d-flex align-items-center">
-                                <i class="bi bi-calendar-event-fill me-2 text-primary"></i>
-                                <div>
-                                    <small class="text-muted d-block">SCHEDULED TIME:</small>
-                                    <span class="fs-6 fw-bold">
-                                        <?php echo date('D, d M Y - H:i', strtotime($result['jadwalKelas'])); ?>
-                                    </span>
+                            <div class="h-100 d-flex flex-column">
+                                <h5 class="fw-bold mb-3"><?php echo $hasilKelas[0]['namaKelas']; ?></h5>
+                                
+                                <!-- Student Info - New section for tutor view -->
+                                <div class="d-flex align-items-center mt-2 info-item">
+                                    <i class="bi bi-person-fill me-2 text-secondary"></i>
+                                    <span class="fw-bold">Student: <?php echo $student['nama']; ?></span>
+                                </div>
+                                <div class="d-flex align-items-center mt-2 info-item">
+                                    <i class="bi bi-clock-fill me-2 text-secondary"></i>
+                                    <span><?php echo $result["jumlahDurasi"]; ?> hour</span>
+                                </div>
+                                <div class="d-flex align-items-center mt-2 info-item">
+                                    <i class="bi bi-cash-stack me-2 text-secondary"></i>
+                                    <span class="fw-bold">Rp <?php echo number_format($result["subtotalOrder"], 0, ',', '.'); ?></span>
+                                </div>
+                                <div class="d-flex align-items-center mt-2 info-item">
+                                    <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
+                                    <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
                                 </div>
                             </div>
-                            <?php endif; ?>
-                            <div class="d-flex align-items-center mt-2">
-                                <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
-                                <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
-                            </div><?php if(!empty($result['catatanOrder'])): ?>
-                            <div class="order-note mt-2">
-                                <i class="bi bi-quote me-2"></i>
-                                <?php echo $result['catatanOrder']; ?>
-                            </div>
-                            <?php endif; ?>
-
-                        
-                        </div>                        <div class="col-md-3 d-flex flex-column justify-content-center align-items-center h-100">
-                            <!-- Tutor Action Buttons based on order status -->
-                            <div class="d-flex flex-column justify-content-center align-items-center w-100 p-2">                                <?php if($result["statusOrder"] == 1): ?>
-                                    <!-- Accept/Reject buttons for pending orders -->
-                                    <div class="d-flex gap-2 mb-3 w-100">
-                                        <a href="javascript:void(0);" 
-                                           onclick="confirmAcceptOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
-                                           class="btn btn-success w-50 py-2">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Accept
-                                        </a>
-                                        <a href="javascript:void(0);" 
-                                           onclick="confirmRejectOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
-                                           class="btn btn-danger w-50 py-2">
-                                            <i class="bi bi-x-circle-fill me-1"></i> Reject
-                                        </a>
-                                    </div>
-                                <?php elseif($result["statusOrder"] == 3): ?>
-                                    <!-- Start tutoring button -->
-                                    <a href="javascript:void(0);" 
-                                       onclick="confirmStartTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
-                                       class="btn btn-primary w-100 py-2 mb-3">
-                                        <i class="bi bi-play-circle-fill me-1"></i> Start Tutoring
-                                    </a>
-                                <?php elseif($result["statusOrder"] == 4): ?>
-                                    <!-- Complete tutoring button -->
-                                    <a href="javascript:void(0);" 
-                                       onclick="confirmCompleteTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
-                                       class="btn btn-primary w-100 py-2 mb-3">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Complete Tutoring
-                                    </a>
-                                <?php elseif($result["statusOrder"] == 6): ?>
-                                    <!-- Complaint info -->
-                                    <div class="alert alert-danger p-3 w-100 mb-3 text-center">
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                        This order has been complained
-                                    </div>
+                        </div>                        <div class="col-md-3 d-flex flex-column justify-content-center">
+                            <!-- Information display section -->
+                            <div class="w-100 h-100 d-flex flex-column justify-content-center">
+                                <!-- Order notes display -->
+                                <?php if(!empty($result['catatanOrder'])): ?>
+                                <div class="order-note mb-3">
+                                    <i class="bi bi-quote me-2"></i>
+                                    <?php echo $result['catatanOrder']; ?>
+                                </div>
                                 <?php endif; ?>
                                 
-                                <!-- Chat with student button available for all orders except unpaid ones -->
-                                <?php if($result["statusOrder"] > 0): ?>
-                                    <button type="button" 
-                                       class="btn btn-outline-secondary w-100 py-2 disabled" 
-                                       disabled aria-disabled="true">
-                                        <i class="bi bi-chat-dots-fill me-1"></i> Chat with Student
-                                        <small class="d-block mt-1 text-muted">(Not available)</small>
-                                    </button>
+                                <!-- Schedule/jadwalKelas display with standout styling -->
+                                <?php if(isset($result['jadwalKelas']) && !empty($result['jadwalKelas'])): ?>
+                                <div class="schedule-display d-flex align-items-center mb-3">
+                                    <i class="bi bi-calendar-event-fill me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">SCHEDULED TIME:</small>
+                                        <span class="fs-6 fw-bold">
+                                            <?php echo date('D, d M Y - H:i', strtotime($result['jadwalKelas'])); ?>
+                                        </span>
+                                    </div>
+                                </div>
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <!-- Order ID and Date (if available) -->
+                        
+                          <!-- Order ID and Date (if available) -->
                         <div class="col-md-3 text-end">
-                            <div class="order-details">                                <div class="text-muted order-id">Order ID: #<?php echo $result['idOrder']; ?></div>
-                                
-                                <?php if(isset($result['tanggalOrder'])): ?>
-                                    <div class="text-muted mt-2">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        <small>Ordered: <?php echo date('d M Y H:i', strtotime($result['tanggalOrder'])); ?></small>
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <!-- Status Label -->
-                                <?php                                $statusLabels = [
-                                    0 => ['text' => 'Belum Bayar', 'class' => 'label-danger'],
-                                    1 => ['text' => 'Menunggu Konfirmasi Tutor', 'class' => 'label-pending'],
-                                    2 => ['text' => 'Tutor Menolak Pesanan', 'class' => 'label-reject'],
-                                    3 => ['text' => 'Pesanan Disetujui/Menunggu Waktu Tutoring', 'class' => 'label-wait'],
-                                    4 => ['text' => 'Dalam Proses Tutoring', 'class' => 'label-proses'],
-                                    5 => ['text' => 'Pesanan Selesai', 'class' => 'label-done'],
-                                    6 => ['text' => 'Pesanan Dikomplain', 'class' => 'label-danger'],
-                                    7 => ['text' => 'Komplain Terselesaikan/Resolved', 'class' => 'label-done']
-                                ];
+                            <div class="order-details h-100 d-flex flex-column justify-content-between align-content-center">
+                                <div>
+                                <div class="mb-2">
+                                    <!-- Status Label -->
+                                    <?php
+                                    $statusLabels = [
+                                        0 => ['text' => 'Belum Bayar', 'class' => 'label-danger'],
+                                        1 => ['text' => 'Menunggu Konfirmasi Tutor', 'class' => 'label-pending'],
+                                        2 => ['text' => 'Tutor Menolak Pesanan', 'class' => 'label-reject'],
+                                        3 => ['text' => 'Pesanan Disetujui/Menunggu Waktu Tutoring', 'class' => 'label-wait'],
+                                        4 => ['text' => 'Dalam Proses Tutoring', 'class' => 'label-proses'],
+                                        5 => ['text' => 'Pesanan Selesai', 'class' => 'label-done'],
+                                        6 => ['text' => 'Pesanan Dikomplain', 'class' => 'label-danger'],
+                                        7 => ['text' => 'Komplain Terselesaikan/Resolved', 'class' => 'label-done']
+                                    ];
 
-                                $status = $result["statusOrder"];
-                                if (isset($statusLabels[$status])):
-                                ?>
-                                    <div class="status-badge mt-2 <?php echo $statusLabels[$status]['class']; ?>">
-                                        <?php echo $statusLabels[$status]['text']; ?>
+                                    $status = $result["statusOrder"];
+                                    if (isset($statusLabels[$status])):
+                                    ?>
+                                        <div class="status-badge mt-2 <?php echo $statusLabels[$status]['class']; ?>">
+                                            <?php echo $statusLabels[$status]['text']; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if(isset($result['createdAt'])): ?>
+                                        <div class="text-muted mt-2">
+                                            <small><?php echo date('d M Y', strtotime($result['createdAt'])); ?></small>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                    <div class="text-muted order-id">Order ID: #<?php echo $result['idOrder']; ?></div>
+                                    
+                                    <?php if(isset($result['tanggalOrder'])): ?>
+                                        <div class="text-muted mt-2">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            <small>Ordered: <?php echo date('d M Y H:i', strtotime($result['tanggalOrder'])); ?></small>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Action buttons moved here -->
+                                    <div class="mt-3">
+                                        <?php if($result["statusOrder"] == 1): ?>
+                                            <!-- Accept/Reject buttons for pending orders -->
+                                            <div class="d-flex gap-2 mb-3 w-100">
+                                                <a href="javascript:void(0);" 
+                                                onclick="confirmAcceptOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
+                                                class="btn btn-success w-50 py-2">
+                                                    <i class="bi bi-check-circle-fill me-1"></i> Accept
+                                                </a>
+                                                <a href="javascript:void(0);" 
+                                                onclick="confirmRejectOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
+                                                class="btn btn-danger w-50 py-2">
+                                                    <i class="bi bi-x-circle-fill me-1"></i> Reject
+                                                </a>
+                                            </div>
+                                        <?php elseif($result["statusOrder"] == 3): ?>
+                                            <!-- Start tutoring button -->
+                                            <a href="javascript:void(0);" 
+                                            onclick="confirmStartTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
+                                            class="btn btn-primary w-100 py-2 mb-3">
+                                                <i class="bi bi-play-circle-fill me-1"></i> Start Tutoring
+                                            </a>
+                                        <?php elseif($result["statusOrder"] == 4): ?>
+                                            <!-- Complete tutoring button -->
+                                            <a href="javascript:void(0);" 
+                                            onclick="confirmCompleteTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
+                                            class="btn btn-primary w-100 py-2 mb-3">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Complete Tutoring
+                                            </a>
+                                        <?php elseif($result["statusOrder"] == 6): ?>
+                                            <!-- Complaint info -->
+                                            <div class="alert alert-danger p-3 w-100 mb-3 text-center">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                                This order has been complained
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <!-- Chat with student button available for all orders except unpaid ones -->
+                                        <?php if($result["statusOrder"] > 0): ?>
+                                            <button type="button" 
+                                            class="btn btn-outline-secondary w-100 py-2 disabled" 
+                                            disabled aria-disabled="true">
+                                                <i class="bi bi-chat-dots-fill me-1"></i> Chat with Student
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
+                                </div>
                                 
-                                <?php if(isset($result['createdAt'])): ?>
-                                    <div class="text-muted mt-2">
-                                        <small><?php echo date('d M Y', strtotime($result['createdAt'])); ?></small>
-                                    </div>
-                                <?php endif; ?>
+                                
                             </div>
                         </div>
                     </div>

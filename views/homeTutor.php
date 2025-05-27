@@ -95,44 +95,48 @@ $saldo = $user->getSaldo($idUser);
             <img src="../images/skilltap logo+brand.png" style="width:300px; " alt="">
         </div>
     </div> -->
-    <div class="navbar w-100 bg-ouryellow">
-        <div class="container-fluid d-flex justify-content-between">            
-            <div class="container w-25 d-flex justify-content-center">
-                <a href="homeTutor.php?id=<?php echo $idUser; ?>">
-                    <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
-                </a>
-            </div>
-            <div class="d-flex align-items-center justify-content-center w-50">
-                <form method="GET" action="homeLearner.php" class="input-group me-2"> <input type="hidden" name="id" value="<?php echo $idUser; ?>">
-                    <input type="text" class="form-control montserratRegular" name="search" placeholder="Search Classes" aria-label="Search classes">
+    
+    <div class="navbar w-100">
+        <div class="container-fluid row px-5">
+            <div class="container col-2 d-flex justify-content-center">
+                <a href="">
+                    <img src="../images/skilltap brand.png" class="rounded-pill" style="width:200px;" alt="">
+                </a>                
+            </div>                
+            
+            <div class="container col-9 d-flex align-items-center justify-content-between rounded-4 p-3 gap-2">
+                <!-- <form method="GET" action="homeLearner.php" class="input-group me-2 d-flex justify-content-between gap-2">
+                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                    <input type="text" class="form-control montserratRegular rounded-2 bg-light text-dark border border-secondary" name="search" value="<?php echo $searchTerm; ?>" placeholder="Search Classes" aria-label="Search classes" style="box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
                     <div class="input-group-append">
                         <button class="btn btn-outline-dark montserratSemiBold" type="submit">Search</button>
                     </div>
                 </form>
-                <a href="" class="ms-2">
+
+                <a href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">
                     <i class="bi bi-filter text-dark" style="font-size: 30px;"></i>
-                </a>
+                </a> -->
             </div>
 
-            <div class="container w-25 px-5 row" style="color:black;">
+            <div class="container col-1 row" style="color:black;">
                 <!-- <div class="container col-3">
                     <a href="">
-                    <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
+                        <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
                     </a>
-                </div> -->
+                </div> -->                    
                 <!-- <div class="container col-3">
-                    <a href="">
-                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
-                    </a>
+                    <a href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">
+                        <i class="bi bi-filter text-dark" id="filterIcon" style="font-size: 30px;"></i>
+                    </a>                
                 </div> -->
                 <div class="container col-3">
-                    <a href="orderListTutor.php?id=<?php echo $idUser; ?>">
+                    <a href="orderListLearner.php?id=<?php echo $id; ?>">
                         <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
                 <div class="container col-3">
                     <a href="logout.php" title="Logout">
-                    <i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i></a></th>
+                        <i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
             </div>
@@ -154,7 +158,7 @@ $saldo = $user->getSaldo($idUser);
                     <button class="btn btn-outline-primary montserratBold" style="font-size:20px;" onclick="window.location.href='WithdrawBalance.php?id=<?=$idUser;?>'">Withdraw</button>
                 </div> -->
                 <div class="col-3 text-center d-flex justify-content-center align-items-center">
-                    <button class="btn btn-outline-secondary montserratBold text-muted" style="font-size:20px; pointer-events: none; opacity: 0.65;" disabled>Withdraw</button>
+                 <button class="btn btn-outline-secondary montserratBold text-muted" style="font-size:20px; pointer-events: none; opacity: 0.65;" disabled>Withdraw</button>
                 </div>
             </div>
         </div>

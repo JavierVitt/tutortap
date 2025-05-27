@@ -209,7 +209,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
         #filterButton.active::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: 3px;
             left: 50%;
             transform: translateX(-50%);
             width: 8px;
@@ -228,55 +228,67 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
 <body class="montserratRegular">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
-    <div class="navbar w-100 bg-ouryellow ">
-            <div class="container-fluid d-flex justify-content-between">
-                <div class="container w-25 d-flex justify-content-center">
-                    <a href="">
-                        <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
-                    </a>                </div>                
-                <div class="d-flex align-items-center justify-content-center w-50">
-                    <form method="GET" action="homeLearner.php" class="input-group me-2"> <input type="hidden" name="id" value="<?php echo $idUser; ?>">
-                        <input type="text" class="form-control montserratRegular" name="search" placeholder="Search Classes" aria-label="Search classes">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-dark montserratSemiBold" type="submit">Search</button>
-                        </div>
-                    </form>
-                    <a href="" class="ms-2">
-                        <i class="bi bi-filter text-dark" style="font-size: 30px;"></i>
+    <div class="navbar w-100">
+        <div class="container-fluid row px-5">
+            <div class="container col-2 d-flex justify-content-center">
+                <a href="">
+                    <img src="../images/skilltap brand.png" class="rounded-pill" style="width:200px;" alt="">
+                </a>                
+            </div>                
+            
+            <div class="container col-8 d-flex align-items-center justify-content-between rounded-4 py-3 gap-2">
+                <form method="GET" action="homeLearner.php" class="input-group me-2 d-flex justify-content-between gap-2 w-100">
+                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                    <div class="input-group position-relative">
+                        <span class="input-group-text bg-light border border-secondary border-end-0" style="border-radius: 0.375rem 0 0 0.375rem;">
+                            <i class="bi bi-search text-secondary"></i>
+                        </span>
+
+                        <input type="text" class="form-control montserratRegular rounded-0 bg-light text-dark border border-secondary border-start-0 border-end-0" name="search" value="<?php echo $searchTerm; ?>" placeholder="Search Classes" aria-label="Search classes" style="box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
+
+                        <span class="input-group-text bg-dark border border-secondary border-start-0 py-1 px-2" style="border-radius: 0 0.375rem 0.375rem 0; cursor: pointer;" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <i class="bi bi-filter text-white" style="font-size: 1.5rem;"></i>
+                        </span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-2 row justify-content-center align-items-center" style="color:black;">
+
+                <!-- Wishlist Button -->
+                <div class="col-auto"> <a href="#">
+                        <i class="bi bi-heart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
-                <div class="container w-25 px-5 row" style="color:black;">
-                    <!-- <div class="container col-3">
-                        <a href="">
-                            <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
-                        </a>
-                    </div> -->                    
-                    <!-- <div class="container col-3">
-                        <a href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">
-                            <i class="bi bi-filter text-dark" id="filterIcon" style="font-size: 30px;"></i>
-                        </a>                
-                    </div> -->
-                    <div class="container col-3">
-                        <a href="orderListLearner.php?id=<?php echo $id; ?>">
-                            <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
-                        </a>
-                    </div>
-                    <div class="container col-3">
-                        <a href="logout.php" title="Logout">
-                            <i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i></a></th>
-                        </a>
-                    </div>
+
+                <div class="col-auto">
+                    <a href="orderListLearner.php?id=<?php echo $id; ?>">
+                        <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
+                    </a>
+                </div>
+
+                <div class="col-auto">
+                    <a href="logout.php" title="Logout">
+                        <i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i>
+                    </a>
                 </div>
             </div>
-        </div>        <div class="container-fluid text-center mt-5 montserratBold ">
+            
+        </div>
+    </div>
+        
+        <div class="container-fluid text-center montserratBold ">
             <h1 class="montserratBold">
                 <?php if(!empty($searchTerm)): ?>
                     Search Results for: "<?php echo $searchTerm; ?>"
                 <?php else: ?>
-                    Discover Classes
+                    <!-- Discover Classes -->
                 <?php endif; ?>
             </h1>
-        </div>        <div class="container-fluid p-5">            <?php if(empty($datas) && !empty($searchTerm)): ?>
+        </div>        
+        
+        <div class="container-fluid px-5">            
+            <?php if(empty($datas) && !empty($searchTerm)): ?>
                 <div class="alert alert-warning text-center">
                     <h3>No classes found matching "<?php echo $searchTerm; ?>"</h3>
                     <p>Try another search term, check your spelling, or <a href="homeLearner.php?id=<?php echo $id; ?>">browse all classes</a>.</p>
@@ -359,13 +371,12 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                     <?php endif; ?>
                 </div>
             </div>
-            <?php endif; ?>
-            <div class="row p-3">                
+            <?php endif; ?>            <div class="row p-3">                  
                 <?php foreach ($datas as $key => $data) : ?>
                     <div class="col-md-4 mb-4 card-container search-result-item" style="animation-delay: <?php echo $key * 0.1; ?>s;" onclick="window.location.href='classDetail.php?id=<?php echo $id; ?>&classId=<?php echo $data['idKelas']; ?>'">
                         <div class="card h-100 shadow-lg bg-white rounded">
                             <img class="card-img-top" src="../images/<?php echo $data['fotoKelas']; ?>" alt="Card image cap" style="height: 200px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column">                            
+                            <div class="card-body d-flex flex-column" onclick="window.location.href='classDetail.php?id=<?php echo $id; ?>&classId=<?php echo $data['idKelas']; ?>'">                            
                                 <h5 class="card-title montserratBold">
                                     <?php 
                                     if (!empty($searchTerm)) {
@@ -697,8 +708,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                 
                 // Build the query string
                 const queryString = new URLSearchParams(filters).toString();
-                
-                // Redirect to the filtered URL
+                  // Redirect to the filtered URL
                 window.location.href = `homeLearner.php?${queryString}`;
             };
         }
