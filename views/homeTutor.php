@@ -96,18 +96,23 @@ $saldo = $user->getSaldo($idUser);
         </div>
     </div> -->
     <div class="navbar w-100 bg-ouryellow">
-        <div class="container-fluid d-flex justify-content-between">            <div class="container w-25 d-flex justify-content-center">
+        <div class="container-fluid d-flex justify-content-between">            
+            <div class="container w-25 d-flex justify-content-center">
                 <a href="homeTutor.php?id=<?php echo $idUser; ?>">
                     <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
                 </a>
             </div>
-            <form method="GET" action="homeLearner.php" class="input-group w-50">
-                <input type="hidden" name="id" value="<?php echo $idUser; ?>">
-                <input type="text" class="form-control montserratRegular" name="search" placeholder="Search Classes" aria-label="Search classes">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-dark montserratSemiBold" type="submit">Search</button>
-                </div>
-            </form>
+            <div class="d-flex align-items-center justify-content-center w-50">
+                <form method="GET" action="homeLearner.php" class="input-group me-2"> <input type="hidden" name="id" value="<?php echo $idUser; ?>">
+                    <input type="text" class="form-control montserratRegular" name="search" placeholder="Search Classes" aria-label="Search classes">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-dark montserratSemiBold" type="submit">Search</button>
+                    </div>
+                </form>
+                <a href="" class="ms-2">
+                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i>
+                </a>
+            </div>
 
             <div class="container w-25 px-5 row" style="color:black;">
                 <!-- <div class="container col-3">
@@ -115,11 +120,11 @@ $saldo = $user->getSaldo($idUser);
                     <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
                     </a>
                 </div> -->
-                <div class="container col-3">
+                <!-- <div class="container col-3">
                     <a href="">
                     <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
                     </a>
-                </div>                
+                </div> -->
                 <div class="container col-3">
                     <a href="orderListTutor.php?id=<?php echo $idUser; ?>">
                         <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
