@@ -12,10 +12,17 @@ function query($syntax)
 
     while ($row = mysqli_fetch_assoc($result)) {
         $rows[] = $row;
-    }
-
-    return $rows;
+    }    return $rows;
 }
+
+// Function to execute query without returning result
+function executeQuery($syntax)
+{
+    global $conn;
+    $result = mysqli_query($conn, $syntax);
+    return $result;
+}
+
 class Kelas
 {
     static function getAllKelas()

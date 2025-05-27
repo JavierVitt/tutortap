@@ -35,33 +35,19 @@ function removeParametersFromCurrentUrl($paramsToRemove) {
 
 $searchTerm = '';
 
-// Process search query if form was submitted
-if(isset($_GET['search'])) {
+// Get all wishlisted classes for the current user
+$wishlistQuery = "SELECT k.* FROM kelas k 
+                 JOIN wishlist w ON k.idKelas = w.classId 
+                 WHERE w.userId = '$id' AND k.statusKelas = 1";
+
+// If there's a search term, filter the wishlist results
+if(isset($_GET['search']) && !empty($_GET['search'])) {
     $searchTerm = htmlspecialchars($_GET['search']);
-      // If search term is empty, get all classes
-    if(trim($searchTerm) === '') {
-        $kelas = new Kelas();
-        $datas = $kelas->getAllKelas();
-    } else {
-        // Get filtered classes based on search term
-        $kelas = new Kelas();
-        $datas = $kelas->searchKelas($searchTerm);
-    }
-} else {
-    // Get all classes if no search was performed
-    $kelas = new Kelas();
-    $datas = $kelas->getAllKelas();
+    $wishlistQuery .= " AND (k.namaKelas LIKE '%$searchTerm%' OR k.deskripsiKelas LIKE '%$searchTerm%')";
 }
 
-// Filter out classes created by the current user
-// We only want to show classes from other users in learner view
-$filteredDatas = [];
-foreach ($datas as $data) {
-    if ($data['userId'] != $id) {
-        $filteredDatas[] = $data;
-    }
-}
-$datas = $filteredDatas;
+// Get the wishlisted classes
+$datas = query($wishlistQuery);
 
 // Apply location filter if set
 if(isset($_GET['location']) && !empty($_GET['location'])) {
@@ -126,7 +112,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
 <html lang="en">
 
 <head>
-    <title>TutorTap - Home</title>
+    <title>TutorTap - My Wishlist</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -143,7 +129,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="../styles/styles.css" rel="stylesheet" />    <style>        
+    <link href="../styles/styles.css" rel="stylesheet" /><style>        
         .card-container {
             position: relative;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -201,7 +187,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
         
         /* Wishlist button styles */
         .wishlist-btn {
-            opacity: 0.9;
+            opacity: 0.7;
             transition: all 0.2s ease-in-out;
         }
         
@@ -212,13 +198,11 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
         
         .wishlist-btn .btn {
             transition: all 0.2s ease;
-            background-color: white !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .wishlist-btn:hover .btn {
             background-color: white !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
         }
         
         /* Filter button styles */
@@ -272,13 +256,12 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                         </span>
                     </div>
                 </form>
-            </div>            
-            
+            </div>
+
             <div class="col-2 row justify-content-center align-items-center" style="color:black;">
 
                 <!-- Wishlist Button -->
-                <div class="col-auto">
-                    <a href="wishlist.php?id=<?php echo $id; ?>">
+                <div class="col-auto"> <a href="#">
                         <i class="bi bi-heart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
@@ -298,13 +281,12 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
             
         </div>
     </div>
-        
-        <div class="container-fluid text-center montserratBold ">
+          <div class="container-fluid text-center montserratBold ">
             <h1 class="montserratBold">
                 <?php if(!empty($searchTerm)): ?>
                     Search Results for: "<?php echo $searchTerm; ?>"
                 <?php else: ?>
-                    <!-- Discover Classes -->
+                    My Wishlist
                 <?php endif; ?>
             </h1>
         </div>        
@@ -313,7 +295,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
             <?php if(empty($datas) && !empty($searchTerm)): ?>
                 <div class="alert alert-warning text-center">
                     <h3>No classes found matching "<?php echo $searchTerm; ?>"</h3>
-                    <p>Try another search term, check your spelling, or <a href="homeLearner.php?id=<?php echo $id; ?>">browse all classes</a>.</p>
+                    <p>Try another search term, check your spelling, or <a href="wishlist.php?id=<?php echo $id; ?>">view all wishlist items</a>.</p>
                     
                     <div class="mt-3">
                         <h5>Search Tips:</h5>
@@ -321,6 +303,20 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                             <li>Use specific terms related to what you want to learn</li>
                             <li>Try different words with similar meanings</li>
                             <li>Search by skill name, subject, or topic area</li>
+                        </ul>
+                    </div>
+                </div>
+            <?php elseif(empty($datas)): ?>
+                <div class="alert alert-warning text-center">
+                    <h3>Your wishlist is empty</h3>
+                    <p>You haven't added any classes to your wishlist yet. <a href="homeLearner.php?id=<?php echo $id; ?>">Browse classes</a> and click the heart icon to save your favorites!</p>
+                    
+                    <div class="mt-3">
+                        <h5>Why use a wishlist?</h5>
+                        <ul class="list-unstyled">
+                            <li>Save classes you're interested in for later</li>
+                            <li>Keep track of classes you want to compare</li>
+                            <li>Easily find your favorite classes again</li>
                         </ul>
                     </div>
                 </div>
@@ -393,13 +389,11 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                     <?php endif; ?>
                 </div>
             </div>
-            <?php endif; ?>            
-            <div class="row p-3">                  
-                <?php foreach ($datas as $key => $data) : ?>                    
-                    <div class="col-md-4 mb-4 card-container search-result-item" style="animation-delay: <?php echo $key * 0.1; ?>s;">
-                        <div class="card h-100 shadow-lg bg-white rounded">                              <!-- Wishlist button -->
+            <?php endif; ?>            <div class="row p-3">                  
+                <?php foreach ($datas as $key => $data) : ?>                    <div class="col-md-4 mb-4 card-container search-result-item" style="animation-delay: <?php echo $key * 0.1; ?>s;">
+                        <div class="card h-100 shadow-lg bg-white rounded">                            <!-- Wishlist button -->
                             <div class="wishlist-btn" style="position: absolute; top: 10px; right: 10px; z-index: 100;">
-                                <a href="#" class="btn btn-white rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: white;" onclick="event.stopPropagation(); toggleWishlist(<?php echo $data['idKelas']; ?>, this);">
+                                <a href="#" class="btn btn-light rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" onclick="event.stopPropagation(); toggleWishlist(<?php echo $data['idKelas']; ?>, this);">
                                     <?php 
                                     // Check if this class is already in user's wishlist
                                     $checkWishlistQuery = "SELECT * FROM wishlist WHERE userId = '$id' AND classId = '" . $data['idKelas'] . "'";
@@ -407,9 +401,9 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                                     
                                     if($isWishlisted): 
                                     ?>
-                                    <i class="bi bi-heart-fill" style="font-size: 20px; color: #FFCC01;"></i>
+                                    <i class="bi bi-heart-fill text-danger" style="font-size: 20px;"></i>
                                     <?php else: ?>
-                                    <i class="bi bi-heart" style="font-size: 20px; color: #FFCC01;"></i>
+                                    <i class="bi bi-heart text-danger" style="font-size: 20px;"></i>
                                     <?php endif; ?>
                                 </a>
                             </div>
@@ -436,7 +430,7 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <!-- Left side: Price and Rating -->
                                     <div class="flex-grow-1">
-                                        <h5 class="card-text"><span class="montserratBold">Rp. <?php echo number_format($data['hargaKelas'], 0, ',', '.'); ?></span><?php if(isset($data['durasiKelas'])): ?>/<?= $data['durasiKelas']; ?><?php endif; ?></h5>
+                                        <h5 class="card-text">Rp.<?= $data['hargaKelas']; ?><?php if(isset($data['durasiKelas'])): ?>/<?= $data['durasiKelas']; ?><?php endif; ?></h5>
                                         
                                         <!-- Class rating -->
                                         <div class="card-text" style="display: flex; align-items: center;">
@@ -517,10 +511,9 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
                     This content is a little bit longer.</p>
                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
             </div>
-        </div> -->        
-        <div class="container-fluid d-flex justify-content-center py-3">
+        </div> -->        <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
             <div class="btn-group w-50 py-5">
-                <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $id; ?>'">
+                <button type="button" class="btn btn-outline-dark " style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $id; ?>'">
                     <h1>Tutor</h1>
                 </button>
                 <button type="button" class="btn btn-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $id; ?>'">
@@ -774,18 +767,16 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
             body: formData
         })
         .then(response => response.json())
-        .then(data => {            if (data.success) {
+        .then(data => {
+            if (data.success) {
                 // Update the heart icon based on the action
                 if (data.action === 'added') {
                     heartIcon.classList.replace('bi-heart', 'bi-heart-fill');
                     
                     // Show success toast
-                    showToast('Class added to wishlist!', 'success');
+                    // showToast('Class added to wishlist!', 'success');
                 } else if (data.action === 'removed') {
                     heartIcon.classList.replace('bi-heart-fill', 'bi-heart');
-                    
-                    // Show info toast
-                    showToast('Class removed from wishlist', 'info');
                     
                     // Show info toast
                     // showToast('Class removed from wishlist', 'info');

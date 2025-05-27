@@ -256,7 +256,7 @@ $saldo = $user->getSaldo($idUser);
         </div>
     </div>
     
-    <div class="container-fluid bg-ouryellow d-flex justify-content-center py-3">
+    <div class="container-fluid d-flex justify-content-center py-3">
         <div class="btn-group w-50 py-5">
             <button type="button" class="btn btn-dark" style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $idUser; ?>'">
                 <h1 class="text-white">Tutor</h1>

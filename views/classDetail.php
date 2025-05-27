@@ -288,12 +288,12 @@ $kelas = query($syntax);
             </div>
         </div>
 
-              <div class="container-fluid bg-ouryellow d-flex justify-content-center pt-3">
+              <div class="container-fluid d-flex justify-content-center pt-3">
             <div class="btn-group w-50 py-5">
                 <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $idUser; ?>'">
                     <h1>Tutor</h1>
                 </button>
-                <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $idUser; ?>'">
+                <button type="button" class="btn btn-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $idUser; ?>'">
                     <h1>Learner</h1>
                 </button>
             </div>
