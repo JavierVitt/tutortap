@@ -23,7 +23,90 @@ class Kelas
         $syntax = "SELECT * FROM KELAS WHERE statusKelas = 1";
         $datas = query($syntax);
         return $datas;
+    }      static function searchKelas($searchTerm)
+    {
+        global $conn;
+        
+        // If search term is empty or only whitespace, return all classes
+        if (trim($searchTerm) === '') {
+            return self::getAllKelas();
+        }
+        
+        // Break the search term into individual words
+        $searchWords = explode(' ', trim($searchTerm));
+          // Base query with class and user joins to include tutor information
+        $baseQuery = "SELECT k.*, ";
+        
+        // Prepare parameterized conditions for each word in the search term
+        $conditions = [];
+        $params = [];
+        $types = "";
+        
+        // Add exact match parameter for title (highest priority)
+        $exactMatchParam = "%$searchTerm%";
+        $params[] = $exactMatchParam;
+        $types .= "s";
+        
+        // Start building the CASE statement for relevance scoring
+        $scoreQuery = "CASE WHEN k.namaKelas LIKE ? THEN 3 ";  // Exact match in title: highest priority
+        
+        // For each word, create weighted conditions
+        foreach ($searchWords as $word) {
+            if (strlen($word) > 2) { // Only consider words with more than 2 characters
+                // Title matches (highest weight)
+                $scoreQuery .= "WHEN k.namaKelas LIKE ? THEN 2 ";
+                $params[] = "%$word%";
+                $types .= "s";
+                
+                // Description matches (medium weight)
+                $scoreQuery .= "WHEN k.deskripsiKelas LIKE ? THEN 1 ";
+                $params[] = "%$word%";
+                $types .= "s";
+            }
+        }
+        
+        // Complete the CASE statement
+        $scoreQuery .= "ELSE 0 END AS relevance_score";
+        
+        // Complete the query with FROM, JOIN, WHERE, and ORDER BY clauses
+        $query = $baseQuery . $scoreQuery . " 
+                 FROM kelas k
+                 WHERE k.statusKelas = 1
+                 HAVING relevance_score > 0
+                 ORDER BY relevance_score DESC, k.namaKelas ASC";
+        
+        // Prepare and execute the statement
+        $stmt = mysqli_prepare($conn, $query);
+        
+        if ($stmt) {
+            // Bind all parameters
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            
+            $datas = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $datas[] = $row;
+            }
+            return $datas;
+        }
+        
+        // Fallback to basic search if the advanced query fails
+        $searchParam = "%$searchTerm%";
+        $fallbackQuery = "SELECT * FROM kelas WHERE statusKelas = 1 AND 
+                         (namaKelas LIKE ? OR deskripsiKelas LIKE ?)";
+        $stmt = mysqli_prepare($conn, $fallbackQuery);
+        mysqli_stmt_bind_param($stmt, "ss", $searchParam, $searchParam);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        $datas = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $datas[] = $row;
+        }
+        return $datas;
     }
+    
     static function getTutorKelas($idUser)
     {
         $syntax = "SELECT * FROM KELAS WHERE userId = $idUser";
@@ -84,6 +167,12 @@ class Admin{
     }
 }
 class User{
+    static function getUserById($userId) {
+        $syntax = "SELECT * FROM USER WHERE userId = $userId";
+        $result = query($syntax);
+        return !empty($result) ? $result[0] : null;
+    }
+    
     static function checkSaldo($idUser, $reqSaldo){
         global $conn;
 
@@ -149,24 +238,35 @@ class Order{
         $stmt = mysqli_prepare($this->conn, $updateQuery);
         mysqli_stmt_bind_param($stmt, 'i', $this->idOrder);
         mysqli_stmt_execute($stmt);
-    }
-    static function addOrder($idUser, $idKelas, $durasi, $totalHarga){
+    }    static function addOrder($idUser, $idKelas, $durasi, $totalHarga){
         global $conn;
 
-        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) VALUES ('', " . $idUser . ", " . $idKelas . ", '', " . $durasi . ", '', 0, '" . $totalHarga . "', '')";
-        mysqli_query($conn, $syn);
+        // Use NULL instead of empty string for auto-increment primary key
+        // Use proper date format for tanggalOrder
+        // Use 0 for vaOrder since it's an integer column
+        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`) 
+                VALUES (NULL, " . $idUser . ", " . $idKelas . ", NOW(), " . $durasi . ", '', 0, '" . $totalHarga . "', 0)";
+        
+        // Execute query with error handling
+        if (!mysqli_query($conn, $syn)) {
+            // Log the error for debugging
+            error_log("SQL Error in Order::addOrder: " . mysqli_error($conn));
+            error_log("SQL Query: " . $syn);
+            return 0; // Return 0 on failure
+        }
 
         $result = mysqli_query($conn, "SELECT LAST_INSERT_ID() as id");
         $row = mysqli_fetch_assoc($result);
         $idOrder = $row['id'];
         return $idOrder;
-        
-    }
-
-    static function setVA($idOrder, $va){
+    }    static function setVA($idOrder, $va){
         global $conn;
 
-        $syn = "UPDATE `order` SET vaOrder = '$va' WHERE idOrder = $idOrder";
+        // Convert the VA code to a numeric value by using only the numeric portion
+        // or by generating a hash of the code
+        $numericVA = crc32($va) & 0x7FFFFFFF; // Generate a positive integer from the string
+        
+        $syn = "UPDATE `order` SET vaOrder = $numericVA WHERE idOrder = $idOrder";
         mysqli_query($conn, $syn);
     }
 
@@ -177,18 +277,34 @@ class Order{
         $result = query($syn);
 
         return $result[0]['vaOrder'];
-    }
-    static function showAllKelas($idUser){
-        $syn = "SELECT * FROM `order` WHERE idUser = $idUser";
+    }    static function showAllKelas($idUser){
+        $syn = "SELECT * FROM `order` WHERE idUser = $idUser ORDER BY tanggalOrder DESC";
         
         $result = query($syn);
         return $result;
     }
-    static function deleteOrder($idOrder){
+    
+    static function showAllKelasByTutor($idUser){
+        // First find all classes taught by this tutor
+        $syn = "SELECT o.* FROM `order` o 
+                INNER JOIN `kelas` k ON o.idClass = k.idKelas 
+                WHERE k.userId = $idUser 
+                ORDER BY o.tanggalOrder DESC";
+        
+        $result = query($syn);
+        return $result;
+    }    static function deleteOrder($idOrder){
         global $conn;
 
         $syn = "DELETE FROM order WHERE idOrder = $idOrder";
         mysqli_query($conn, $syn);
+    }
+    
+    static function updateOrderStatus($idOrder, $status){
+        global $conn;
+
+        $syn = "UPDATE `order` SET statusOrder = $status WHERE idOrder = $idOrder";
+        return mysqli_query($conn, $syn);
     }
     static function getOrderStatus($idOrder){
         global $conn;

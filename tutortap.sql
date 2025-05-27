@@ -111,7 +111,8 @@ CREATE TABLE `kelas` (
   `durasiKelas` varchar(64) NOT NULL,
   `statusKelas` int(5) NOT NULL,
   `deskripsiKelas` varchar(1024) NOT NULL,
-  `fotoKelas` varchar(1024) NOT NULL
+  `fotoKelas` varchar(1024) NOT NULL,
+  `lokasiKelas` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -124,7 +125,7 @@ CREATE TABLE `order` (
   `idOrder` int(16) NOT NULL,
   `idUser` int(16) NOT NULL,
   `idClass` int(16) NOT NULL,
-  `tanggalOrder` date NOT NULL,
+  `tanggalOrder` datetime NOT NULL,
   `jumlahDurasi` int(255) NOT NULL,
   `catatanOrder` varchar(1024) NOT NULL,
   `statusOrder` int(5) NOT NULL,
@@ -142,14 +143,14 @@ CREATE TABLE `user` (
   `userId` int(16) NOT NULL,
   `nama` varchar(1024) NOT NULL,
   `tanggalLahir` date DEFAULT NULL,
-  `biografi` varchar(2048) NOT NULL,
-  `profilePicture` varchar(1024) NOT NULL,
-  `lokasi` varchar(1024) NOT NULL,
-  `email` varchar(1024) NOT NULL,
+  `biografi` varchar(2048) NULL,
+  `profilePicture` varchar(1024) NULL,
+  `lokasi` varchar(1024) NULL,
+  `email` varchar(1024) NULL,
   `password` varchar(1024) NOT NULL,
-  `profesi` varchar(1024) NOT NULL,
-  `noRek` varchar(64) NOT NULL,
-  `saldo` int(255) NOT NULL
+  `profesi` varchar(1024) NULL,
+  `noRek` varchar(64) NULL,
+  `saldo` int(255) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -397,3 +398,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+tutortaptutortaptutortaptutortaptutortap

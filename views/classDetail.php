@@ -1,7 +1,19 @@
 <?php
 require_once "../functions.php";
+
+// Start session
+session_start();
+
+// Check if user is logged in
+if((!isset($_GET['id']) && !isset($_SESSION['user_id'])) || !isset($_GET['classId'])) {
+    // Redirect to login page if not logged in or class ID is missing
+    echo "<script>document.location.href = 'login.php'</script>";
+    exit;
+}
+
+// Get user ID from session if not in URL
+$idUser = isset($_GET['id']) ? $_GET['id'] : $_SESSION['user_id'];
 $idKelas = $_GET['classId'];
-$idUser = $_GET['id'];
 
 $syn = "SELECT * FROM USER WHERE userId = $idUser";
 $users = query($syn);
@@ -54,48 +66,44 @@ $kelas = query($syntax);
 <body class="montserratRegular">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
-    </head>
-
-    <body>
-        <div class="navbar w-100 bg-ouryellow ">
+          <div class="navbar w-100 bg-ouryellow ">
         <div class="container-fluid d-flex justify-content-between">
             <div class="container w-25 d-flex justify-content-center">
-                <a href="">
+                <a href="homeLearner.php?id=<?php echo $idUser; ?>">
                     <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
                 </a>
             </div>
-            <div class="input-group w-50">
-                <input type="text" class="form-control montserratRegular" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <form method="GET" action="homeLearner.php" class="input-group w-50">
+                <input type="hidden" name="id" value="<?php echo $idUser; ?>">
+                <input type="text" class="form-control montserratRegular" name="search" placeholder="Search Classes" aria-label="Search classes">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-dark montserratSemiBold" type="button">Search</button>
+                    <button class="btn btn-outline-dark montserratSemiBold" type="submit">Search</button>
                 </div>
-            </div>
+            </form>
 
-            <div class="container w-25 px-5 row" style="color:black;">
-                <div class="container col-3">
+            <div class="container w-25 px-5 row" style="color:black;">                <div class="container col-3">
                     <a href="">
-                    <i class="bi bi-envelope-fill text-dark" style="font-size: 30px; "></i></a></th>
+                    <i class="bi bi-envelope-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
                 <div class="container col-3">
                     <a href="">
-                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i></a></th>
+                    <i class="bi bi-filter text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
                 <div class="container col-3">
                     <a href="">
-                    <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i></a></th>
+                    <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
-                </div>
-                <div class="container col-3">
-                    <a href="">
-                    <i class="bi bi-list text-dark" style="font-size: 30px;"></i></a></th>
+                </div><div class="container col-3">
+                    <a href="logout.php" title="Logout">
+                    <i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
             </div>
         </div>
     </div>
-        <div class="container-fluid text-center mt-5 montserratBold ">
+    <div class="container-fluid text-center mt-5 montserratBold ">
             <h1 class="montserratBold pb-3">Class Detail</h1>
         </div>
 
@@ -121,26 +129,37 @@ $kelas = query($syntax);
                             <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp.
                                 <?php echo $kelas[0]['hargaKelas']; ?>/
                                 <?php echo $kelas[0]['durasiKelas']; ?>
-                            </p>
-
-
-                            <!-- REVIEW BELUM! -->
+                            </p>                            <!-- REVIEW SECTION -->
                             <div class="card-text" style="display: flex; align-items: center;">
                                 <i class="bi bi-star-fill" style="font-size: 30px; color: #FFCC01;"></i>
-                                <span style="margin-left: 10px;">5.0 - 35 reviews</span>
-                            </div>
-
-                            <!-- tutor section -->
+                                <?php
+                                $syn = "SELECT * FROM class_rating_result WHERE classId = '$idKelas'";
+                                $hasils = query($syn);
+                                if (!empty($hasils)) {
+                                    $hasil = $hasils[0];
+                                    $rataRataRating = $hasil['totalRatingCount'] > 0 ? 
+                                        number_format($hasil['totalRatingSum'] / $hasil['totalRatingCount'], 1) : 0;
+                                    echo '<span style="margin-left: 10px;">' . $rataRataRating . ' - ' . $hasil['totalRatingCount'] . ' reviews</span>';
+                                } else {
+                                    echo '<span style="margin-left: 10px;">No ratings yet</span>';
+                                }
+                                ?>
+                            </div>                            <!-- tutor section -->
                             <div class="d-flex align-items-center mb-4">
+                                <?php 
+                                // Get tutor information
+                                $tutor = User::getUserById($kelas[0]['userId']); 
+                                $tutorProfilePic = !empty($tutor['profilePicture']) ? $tutor['profilePicture'] : "javier.png";
+                                ?>
                                 <div class="flex-shrink-0">
-                                    <img src="../images/javier.png"
-                                    alt="Generic placeholder image" class="img-fluid rounded-circle border border-dark border-3"
-                                    style="width: 70px;">
+                                    <img src="../images/<?php echo $tutorProfilePic; ?>"
+                                    alt="Tutor profile image" class="img-fluid rounded-circle border border-dark border-3"
+                                    style="width: 70px; height: 70px; object-fit: cover;">
                                 </div>
                                 <div class="flex-grow-1 ms-3 py-5">
                                     <div class="d-flex flex-row align-items-center mb-2">
                                     
-                                    <p class="mb-0 me-2 montserratBold">Javier Vittorio</p>
+                                    <p class="mb-0 me-2 montserratBold"><?php echo $tutor['nama']; ?></p>
                                     <ul class="mb-0 list-unstyled d-flex flex-row" style="color: #1B7B2C;">
                                         <li>
                                         <i class="bi bi-star-fill" style="color: #FFCC01;"></i>
@@ -148,12 +167,13 @@ $kelas = query($syntax);
                                     </ul>
                                     </div>
                                     <div>
-                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
                                         data-mdb-ripple-color="dark">+ Follow</button>
-                                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
                                         data-mdb-ripple-color="dark">See profile</button>
-                                    <button onclick="window.location.href='chat.php?id=1&receiverId=9999'" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
-                                        data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
+                                    <button onclick="window.location.href='chat.php?id=<?php echo $idUser; ?>&receiverId=<?php echo $tutor['userId']; ?>'" 
+                                           type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
+                                           data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -161,72 +181,70 @@ $kelas = query($syntax);
 
                         </div>
                         
-                    </div>
-
-                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
+                    </div>                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
                          <div class="input-group w-25">
-                            <input type="text" class="form-control montserratRegular text-center" placeholder="Input" aria-label="Recipient's username" aria-describedby="basic-addon2" style="border-width: 3px; border-color:black;font-size:30px; color:black;">
+                            <input type="number" class="form-control montserratRegular text-center" placeholder="1" value="1" min="1" aria-label="Duration" aria-describedby="basic-addon2" style="border-width: 3px; border-color:black;font-size:30px; color:black;">
                             
                             <div class="input-group-append mt-2">
                                 <h1 style="font-size:40px;" class=""><?php echo $kelas[0]['durasiKelas']; ?></h1>
                             </div>
                         </div>
-                    </div>  
-
-                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
+                    </div>                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
                         <button type="button" class="btn btn-outline-success my-3 w-100" style="font-size: 25px;" onclick="redirectToPembayaran()">
                             <h1>Order Class</h1>
                         </button>
                         <script>
                                 function redirectToPembayaran(){
-                                    var inputValue = document.querySelector('.form-control.montserratRegular.text-center').value;
-                                    console.log(inputValue);
+                                    var inputEl = document.querySelector('.form-control.montserratRegular.text-center');
+                                    var inputValue = inputEl.value.trim();
+                                    
+                                    // Validate input
+                                    if (inputValue === '' || isNaN(inputValue) || parseInt(inputValue) < 1) {
+                                        alert('Please enter a valid duration (minimum 1)');
+                                        inputEl.value = '1';
+                                        return;
+                                    }
+                                    
+                                    console.log("Ordering with duration: " + inputValue);
                                     window.location.href='pembayaranKelas.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&durasi='+inputValue;
                                 }
-                                var inputValue = document.querySelector('.form-control.montserratRegular.text-center').value;
-                                console.log(inputValue);
                         </script>
-                    </div>  
+                    </div>
 
                    
                 </div>
             </div>
         </div>
 
-        
-
-
-        <div class="container-fluid bg-ouryellow d-flex justify-content-center pt-3">
+              <div class="container-fluid bg-ouryellow d-flex justify-content-center pt-3">
             <div class="btn-group w-50 py-5">
-                <button type="button" class="btn btn-outline-dark " style="font-size: 25px;">
+                <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeTutor.php?id=<?php echo $idUser; ?>'">
                     <h1>Tutor</h1>
                 </button>
-                <button type="button" class="btn btn-outline-dark" style="font-size: 25px;">
+                <button type="button" class="btn btn-outline-dark" style="font-size: 25px;" onclick="window.location.href='homeLearner.php?id=<?php echo $idUser; ?>'">
                     <h1>Learner</h1>
                 </button>
             </div>
         </div>
+</body>
 
-    </body>
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center border-top">
+        <p class="col-md-4 mb-0 text-muted">&copy; 2024 Company, Inc</p>
 
-    <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center border-top">
-            <p class="col-md-4 mb-0 text-muted">&copy; 2024 Company, Inc</p>
+        <a href="/"
+            class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <img src="../images/skilltap logo+brand.png" alt="" style="width: 30%; height:30%;">
+        </a>
 
-            <a href="/"
-                class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-
-                <img src="../images/skilltap logo+brand.png" alt="" style="width: 30%; height:30%;">
-            </a>
-
-            <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
-            </ul>
-        </footer>
-    </div>
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+    </footer>
+</div>
 
 </html>

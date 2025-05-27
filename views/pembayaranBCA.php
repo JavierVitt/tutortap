@@ -16,15 +16,22 @@ if(count($users) == 0 || count($kelas) == 0){
     echo "<script>document.location.href = 'error.php?status=queryError'</script>";
 }
 
+// Fetch order details
+$orderQuery = "SELECT * FROM `order` WHERE idOrder = $idOrder";
+$orderData = query($orderQuery);
+if(empty($orderData)) {
+    echo "<script>document.location.href = 'error.php?status=orderNotFound'</script>";
+    exit;
+}
+$orderDuration = $orderData[0]['jumlahDurasi'];
 
 function generateCode() {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // Generate a 12-digit numeric virtual account number for BCA
         $code = '';
         $length = 12;
 
         for ($i = 0; $i < $length; $i++) {
-            $randomIndex = rand(0, strlen($characters) - 1);
-            $code .= $characters[$randomIndex];
+            $code .= rand(0, 9); // Only use digits 0-9
         }
 
         return $code;
@@ -34,18 +41,19 @@ function requestVAToBank($harga){
     global $idOrder;
     $vaOrder = generateCode();
     $order = new Order();
-    $order->setVA($idOrder, $vaOrder);
+    Order::setVA($idOrder, $vaOrder);
+    return $vaOrder; // Return the generated VA code
 }
 
 function pembayaranSelesai(){
-
+    // Implementation for when payment is completed
 }
 
+// Generate VA and store its numeric representation in database
+$displayVA = requestVAToBank($harga);
 
-requestVAToBank($harga);
-
-$order = new Order();
-$virtualAccount = $order->getVA($idOrder);
+// Get the numeric VA from database for verification purposes
+$numericVA = Order::getVA($idOrder);
 
 
 ?>
@@ -82,10 +90,10 @@ $virtualAccount = $order->getVA($idOrder);
                 xhr.send("idOrder=" + encodeURIComponent(<?php echo $idOrder; ?>));
             }
 
-            if(timer <= 590){
-                console.log("Pembayaran sudah dilakukan");
-                window.location.href = "orderList.php?id=<?php echo $idUser; ?>";
-            }
+            // if(timer <= 590){
+            //     console.log("Pembayaran sudah dilakukan");
+            //     window.location.href = "orderListLearner.php?id=<?php echo $idUser; ?>";
+            // }
 
         }, 1000);
     }
@@ -123,10 +131,12 @@ $virtualAccount = $order->getVA($idOrder);
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link href="../styles/styles.css" rel="stylesheet" />
+    
+    <!-- SweetAlert2 for nice alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="montserratRegular">
@@ -138,7 +148,7 @@ $virtualAccount = $order->getVA($idOrder);
         <div class="navbar w-100 bg-ouryellow ">
         <div class="container-fluid d-flex justify-content-between">
             <div class="container w-25 d-flex justify-content-center">
-                <a href="">
+                <a href="homeLearner.php?id=<?php echo $idUser; ?>">
                     <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
                 </a>
             </div>
@@ -179,20 +189,90 @@ $virtualAccount = $order->getVA($idOrder);
 
         <div class="container-fluid text-center mt-5">
             <h1>Virtual Account</h1>
-        </div>
-
-        <div class="container-fluid text-center">
-            <h1 class="montserratExtraBold" style="font-size: 100px;"><?php echo $virtualAccount; ?> <i class="bi bi-copy"></i></h1>
+        </div>        <div class="container-fluid text-center">
+            <h1 class="montserratExtraBold" style="font-size: 100px;"><?php echo $displayVA; ?> <i class="bi bi-copy"></i></h1>
         </div>
 
         <div class="container-fluid text-center mb-5">
-            <h1>Rp.<?php echo $harga ?></h1>
-        </div>
-
-        <!-- countdown -->
-        <div class="container-fluid text-center">
+            <div class="card mx-auto" style="max-width: 500px;">
+                <div class="card-body">
+                    <h3 class="card-title montserratBold">Payment Details</h3>
+                    <div class="row py-2">
+                        <div class="col-6 text-start montserratSemiBold">Class:</div>
+                        <div class="col-6 text-end"><?php echo $kelas[0]['namaKelas']; ?></div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col-6 text-start montserratSemiBold">Price per <?php echo $kelas[0]['durasiKelas']; ?>:</div>
+                        <div class="col-6 text-end">Rp. <?php echo number_format($kelas[0]['hargaKelas'], 0, ',', '.'); ?></div>
+                    </div>                    <div class="row py-2">
+                        <div class="col-6 text-start montserratSemiBold">Duration ordered:</div>
+                        <div class="col-6 text-end">
+                            <?php echo $orderDuration; ?> <?php echo $kelas[0]['durasiKelas']; ?>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row py-2">
+                        <div class="col-6 text-start montserratBold">Total Payment:</div>
+                        <div class="col-6 text-end montserratBold">Rp. <?php echo number_format($harga, 0, ',', '.'); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- countdown -->        <div class="container-fluid text-center">
             <h1 id="countdown" class="text-danger"></h1>
         </div>
+
+        <!-- Payment instructions -->
+        <!-- <div class="container text-center mb-3">
+            <p class="text-muted">After completing your payment through BCA, click the button below to notify the tutor.</p>
+        </div> -->
+
+        <!-- Payment Done Button -->
+        <div class="container-fluid text-center mt-4 mb-5">
+            <button id="paymentDoneBtn" class="btn btn-success btn-lg montserratBold px-5 py-3" onclick="paymentDone()">
+                <i class="bi bi-check-circle-fill me-2"></i> Payment Done
+            </button>        </div>        <script>
+            function paymentDone() {
+                // Disable the button to prevent multiple submissions
+                const paymentButton = document.getElementById('paymentDoneBtn');
+                paymentButton.disabled = true;
+                paymentButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                
+                // Create an AJAX request to update the order status
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "update_order_status.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200 && this.responseText.includes("success")) {
+                            console.log("Order status updated successfully");
+                            // Show SweetAlert success message before redirecting
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Confirmed!',
+                                text: 'The tutor will be notified of your order.',
+                                confirmButtonColor: '#28a745'
+                            }).then(() => {
+                                // Redirect to order list page after user clicks OK
+                                window.location.href = "orderListLearner.php?id=<?php echo $idUser; ?>";
+                            });
+                        } else {                            console.error("Error updating order status: " + this.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'There was an error processing your payment. Please try again.',
+                                confirmButtonColor: '#dc3545'
+                            });
+                            
+                            // Re-enable the button if there's an error
+                            paymentButton.disabled = false;
+                            paymentButton.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Payment Done';
+                        }
+                    }
+                };
+                // Send the request with the idOrder parameter
+                xhr.send("idOrder=" + encodeURIComponent(<?php echo $idOrder; ?>));
+            }
+        </script>
 
               
 

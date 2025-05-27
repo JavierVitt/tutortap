@@ -1,5 +1,15 @@
 <?php
     require_once '../functions.php';
+    
+    // Start session
+    session_start();
+    
+    // Check if user is already logged in, redirect to home
+    if(isset($_SESSION['user_id'])) {
+        echo "<script>document.location.href = 'homeLearner.php?id=".$_SESSION['user_id']."'</script>";
+        exit;
+    }
+    
     if(isset($_POST['signIn'])){
         $username = $_POST['email'];
         $password = $_POST['password'];
@@ -11,6 +21,12 @@
 
         if($count>0){
             $id = $results[0]['userId'];
+            
+            // Set session variables
+            $_SESSION['user_id'] = $id;
+            $_SESSION['user_name'] = $results[0]['nama'];
+            $_SESSION['user_email'] = $results[0]['email'];
+            
             echo "<script>document.location.href = 'homeLearner.php?id=$id'</script>";
         } else {
             echo '<script>

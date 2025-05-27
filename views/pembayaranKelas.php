@@ -1,8 +1,23 @@
 <?php
 require_once "../functions.php";
+
+// Validate and sanitize input parameters
+if (!isset($_GET['classId']) || !isset($_GET['id'])) {
+    // Redirect to error page if required parameters are missing
+    echo "<script>document.location.href = 'error.php?status=missingParameters'</script>";
+    exit;
+}
+
 $idKelas = $_GET['classId'];
 $idUser = $_GET['id'];
-$durasi = $_GET['durasi'];
+
+// Validate and set default for duration
+$durasi = isset($_GET['durasi']) ? $_GET['durasi'] : '1';
+// Ensure duration is a valid positive number
+if (!is_numeric($durasi) || $durasi < 1) {
+    $durasi = 1;
+}
+
 $syn = "SELECT * FROM USER WHERE userId = $idUser";
 $users = query($syn);
 $syn = "SELECT * FROM KELAS WHERE idKelas = $idKelas"; 
@@ -13,7 +28,8 @@ if(count($users) == 0 || count($kelas) == 0){
     echo "<script>document.location.href = 'error.php?status=queryError'</script>";
 }
 
-if($users[0]['status'] == 2){
+// Check if status key exists before checking its value
+if(isset($users[0]['status']) && $users[0]['status'] == 2){
     echo "<script>document.location.href = 'error.php?status=suspiciousUser'</script>";
 }
 else{
@@ -23,13 +39,20 @@ else{
 
 
 function validasiPesanan(){
-    global $idUser, $idKelas, $durasi, $totalHarga, $idOrder;
+    global $idUser, $idKelas, $durasi, $totalHarga, $idOrder, $conn;
     $syntax = "SELECT * FROM KELAS WHERE idKelas = $idKelas";
     $kelas = query($syntax);
+    
+    // Cast duration to integer to ensure valid calculation
+    $durasi = (int)$durasi;
+    if ($durasi < 1) {
+        $durasi = 1; // Safety check - minimum duration is 1
+    }
+    
     $totalHarga = $durasi * $kelas[0]['hargaKelas'];
 
-    $order = new Order();
-    $idOrder = $order->addOrder($idUser, $idKelas, $durasi, $totalHarga);
+    // Use the static method directly - no need to instantiate the Order class
+    $idOrder = Order::addOrder($idUser, $idKelas, $durasi, $totalHarga);
 }
 
 ?>
@@ -123,9 +146,8 @@ function validasiPesanan(){
                 <img src="https://i.pinimg.com/originals/65/bb/9c/65bb9cee7877f98145f05d73fbf7ebbf.png" alt="" style="height: 100px; width: 45%; object-fit: contain;">
                 </a>
                 <h3 class="montserratBold">Gopay</h3>
-            </div>
-            <div class="container col-4 text-center" style="text-decoration:none; color:inherit;">
-                <a href="pembayaranBCA.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&harga=<?php echo $kelas[0]['hargaKelas'] ?>&idOrder=<?php echo $idOrder; ?>" style="text-decoration:none; color:inherit;">
+            </div>            <div class="container col-4 text-center" style="text-decoration:none; color:inherit;">
+                <a href="pembayaranBCA.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&harga=<?php echo $totalHarga; ?>&idOrder=<?php echo $idOrder; ?>" style="text-decoration:none; color:inherit;">
                     <img src="https://logos-download.com/wp-content/uploads/2017/03/BCA_logo_Bank_Central_Asia.png" alt="" style="height: 100px; width: 45%; object-fit: contain;">
                     <h3 class="montserratBold">BCA</h3>
                 </a>
