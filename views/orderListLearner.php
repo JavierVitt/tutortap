@@ -316,7 +316,8 @@ $results = $order->showAllKelas($idUser);
                                 <div class="text-muted order-id">Order ID: #<?php echo $result['idOrder']; ?></div>
                                 
                                 <!-- Status Label -->
-                                <?php                                $statusLabels = [
+                                <?php                                
+                                $statusLabels = [
                                     0 => ['text' => 'Belum Bayar', 'class' => 'label-danger'],
                                     1 => ['text' => 'Menunggu Konfirmasi Tutor', 'class' => 'label-pending'],
                                     2 => ['text' => 'Tutor Menolak Pesanan', 'class' => 'label-reject'],
