@@ -126,6 +126,15 @@ $kelas = query($syntax);
                             <p class="card-text">
                                 <?php echo $kelas[0]['deskripsiKelas']; ?>
                             </p>
+                            
+                            <!-- Location Section -->
+                            <div class="card-text d-flex align-items-center mb-3">
+                                <i class="bi bi-geo-alt-fill me-2" style="font-size: 24px; color: #0275d8;"></i>
+                                <span class="montserratSemiBold" style="font-size: 18px;">
+                                    <?php echo !empty($kelas[0]['lokasiKelas']) ? $kelas[0]['lokasiKelas'] : 'Online'; ?>
+                                </span>
+                            </div>
+                            
                             <p class="card-text montserratSemiBold px-3" style="font-size: 30px;">Rp.
                                 <?php echo $kelas[0]['hargaKelas']; ?>/
                                 <?php echo $kelas[0]['durasiKelas']; ?>
@@ -171,44 +180,107 @@ $kelas = query($syntax);
                                         data-mdb-ripple-color="dark">+ Follow</button>
                                     <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm"
                                         data-mdb-ripple-color="dark">See profile</button>
-                                    <button onclick="window.location.href='chat.php?id=<?php echo $idUser; ?>&receiverId=<?php echo $tutor['userId']; ?>'" 
+                                    <!-- <button onclick="window.location.href='chat.php?id=<?php echo $idUser; ?>&receiverId=<?php echo $tutor['userId']; ?>'" 
                                            type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm"
                                            data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
+                                    </div> -->
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-floating btn-sm" data-mdb-ripple-color="dark"><i class="bi bi-chat-left-dots-fill"></i></button>
                                     </div>
                                 </div>
                             </div>
+                            <form id="orderForm" style="background-color: rgb(209, 209, 209); border-radius: 10px; padding: 20px;">
+                                <div class="row mb-4 d-flex justify-content-center">
+                                    <div class="col-md-6">
+                                        <label for="durasi" class="form-label montserratSemiBold">Duration</label>
+                                        <div class="input-group justify-content-start">
+                                            <div style="width: 70px;">
+                                                <input type="number" id="durasi" class="form-control montserratRegular" placeholder="1" value="1" min="1" aria-label="Duration" style="border-width: 3px; border-color:black; font-size:20px; color:black;">
+                                            </div>
+                                            <div class="input-group-append d-flex align-items-center ms-2">
+                                                <span style="font-size:20px;" class="montserratSemiBold"><?php echo $kelas[0]['durasiKelas']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="jadwalKelas" class="form-label montserratSemiBold">Schedule</label>
+                                        <div style="width: 250px;">
+                                            <input type="datetime-local" id="jadwalKelas" class="form-control montserratRegular" 
+                                                style="border-width: 3px; border-color:black; font-size:20px; color:black;" 
+                                                min="<?php echo date('Y-m-d\TH:i'); ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-4 d-flex justify-content-center">
+                                    <div class="col-md-12">
+                                        <label for="catatanOrder" class="form-label montserratSemiBold">Notes (Optional)</label>
+                                        <textarea id="catatanOrder" class="form-control montserratRegular" 
+                                            placeholder="Add any special requests or notes for the tutor" rows="5"
+                                            style="border-width: 3px; border-color:black; font-size:20px; color:black;"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-outline-success my-3 w-100" style="font-size: 25px;" onclick="redirectToPembayaran()">
+                                            <h1>Order Class</h1>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <script>
+                                // Set default schedule to tomorrow at 9:00 AM
+                                window.onload = function() {
+                                    const tomorrow = new Date();
+                                    tomorrow.setDate(tomorrow.getDate() + 1);
+                                    tomorrow.setHours(9, 0, 0, 0);
+                                    
+                                    const dateTimeStr = tomorrow.toISOString().slice(0, 16);
+                                    document.getElementById('jadwalKelas').value = dateTimeStr;
+                                };
+                                  function redirectToPembayaran(){
+                                    var durasiInput = document.getElementById('durasi');
+                                    var jadwalInput = document.getElementById('jadwalKelas');
+                                    var catatanInput = document.getElementById('catatanOrder');
+                                    
+                                    var durasiValue = durasiInput.value.trim();
+                                    var jadwalValue = jadwalInput.value.trim();
+                                    var catatanValue = catatanInput.value.trim();
+                                    
+                                    // Validate duration
+                                    if (durasiValue === '' || isNaN(durasiValue) || parseInt(durasiValue) < 1) {
+                                        alert('Please enter a valid duration (minimum 1)');
+                                        durasiInput.value = '1';
+                                        return;
+                                    }
+                                    
+                                    // Validate schedule
+                                    if (jadwalValue === '') {
+                                        alert('Please select a schedule for your class');
+                                        return;
+                                    }
+                                    
+                                    // Check if schedule is in the past
+                                    const selectedDate = new Date(jadwalValue);
+                                    const now = new Date();
+                                    
+                                    if (selectedDate <= now) {
+                                        alert('Please select a future date and time for your class');
+                                        return;
+                                    }
+                                    
+                                    console.log("Ordering with duration: " + durasiValue + " and schedule: " + jadwalValue + " and notes: " + catatanValue);
+                                    window.location.href='pembayaranKelas.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&durasi='+durasiValue+'&jadwalKelas='+encodeURIComponent(jadwalValue)+'&catatan='+encodeURIComponent(catatanValue);
+                                }
+                            </script>
 
 
                         </div>
                         
-                    </div>                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
-                         <div class="input-group w-25">
-                            <input type="number" class="form-control montserratRegular text-center" placeholder="1" value="1" min="1" aria-label="Duration" aria-describedby="basic-addon2" style="border-width: 3px; border-color:black;font-size:30px; color:black;">
-                            
-                            <div class="input-group-append mt-2">
-                                <h1 style="font-size:40px;" class=""><?php echo $kelas[0]['durasiKelas']; ?></h1>
-                            </div>
-                        </div>
-                    </div>                    <div class="container-fluid d-flex justify-content-center" style="width:75%;">
-                        <button type="button" class="btn btn-outline-success my-3 w-100" style="font-size: 25px;" onclick="redirectToPembayaran()">
-                            <h1>Order Class</h1>
-                        </button>
-                        <script>
-                                function redirectToPembayaran(){
-                                    var inputEl = document.querySelector('.form-control.montserratRegular.text-center');
-                                    var inputValue = inputEl.value.trim();
-                                    
-                                    // Validate input
-                                    if (inputValue === '' || isNaN(inputValue) || parseInt(inputValue) < 1) {
-                                        alert('Please enter a valid duration (minimum 1)');
-                                        inputEl.value = '1';
-                                        return;
-                                    }
-                                    
-                                    console.log("Ordering with duration: " + inputValue);
-                                    window.location.href='pembayaranKelas.php?id=<?php echo $idUser;?>&classId=<?php echo $idKelas; ?>&durasi='+inputValue;
-                                }
-                        </script>
+                    </div>                    
+                    <div class="container-fluid" style="width:75%;"></div>
+                        
                     </div>
 
                    

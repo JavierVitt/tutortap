@@ -21,11 +21,12 @@ $results = $order->showAllKelasByTutor($idUser);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         /* Custom Styles */
         body {
@@ -212,8 +213,7 @@ $results = $order->showAllKelasByTutor($idUser);
                 margin-bottom: 15px;
             }
         }
-        
-        /* Order note styling */
+          /* Order note styling */
         .order-note {
             font-style: italic;
             font-size: 0.9rem;
@@ -223,10 +223,62 @@ $results = $order->showAllKelasByTutor($idUser);
             border-left: 3px solid #FFCC01;
             margin-top: 8px;
         }
+        
+        /* Schedule display styling */
+        .schedule-display {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .schedule-display:hover {
+            background-color: #fff3cd;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 
-<body>    <!-- Navbar -->
+<body>
+    <?php
+    // Check for success message in URL parameters
+    if (isset($_GET['success']) && !empty($_GET['success'])) {
+        $successMessage = htmlspecialchars($_GET['success']);
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{$successMessage}',
+                    confirmButtonColor: '#28a745',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+        </script>
+        ";
+    }
+    // Check for error message in URL parameters
+    if (isset($_GET['error']) && !empty($_GET['error'])) {
+        $errorMessage = htmlspecialchars($_GET['error']);
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{$errorMessage}',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        </script>
+        ";
+    }
+    ?>    <!-- Navbar -->
     <div class="navbar w-100">
         <div class="container-fluid d-flex justify-content-between">
             <a href="homeTutor.php?id=<?=$idUser?>" class="back-button"><i class="bi bi-chevron-left" style="font-weight:bolder;"></i></a>
@@ -280,18 +332,29 @@ $results = $order->showAllKelasByTutor($idUser);
                                 <i class="bi bi-person-fill me-2 text-secondary"></i>
                                 <span class="fw-bold">Student: <?php echo $student['nama']; ?></span>
                             </div>
-                            
-                            <div class="d-flex align-items-center mt-2">
+                              <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-clock-fill me-2 text-secondary"></i>
                                 <span><?php echo $result["jumlahDurasi"]; ?> hour</span>
                             </div>
                             <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-cash-stack me-2 text-secondary"></i>
                                 <span class="fw-bold">Rp <?php echo number_format($result["subtotalOrder"], 0, ',', '.'); ?></span>
-                            </div>                            <div class="d-flex align-items-center mt-2">
+                            </div>                            <!-- Schedule/jadwalKelas display with standout styling -->
+                            <?php if(isset($result['jadwalKelas']) && !empty($result['jadwalKelas'])): ?>
+                            <div class="schedule-display d-flex align-items-center">
+                                <i class="bi bi-calendar-event-fill me-2 text-primary"></i>
+                                <div>
+                                    <small class="text-muted d-block">SCHEDULED TIME:</small>
+                                    <span class="fs-6 fw-bold">
+                                        <?php echo date('D, d M Y - H:i', strtotime($result['jadwalKelas'])); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
                                 <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
-                            </div>                            <?php if(!empty($result['catatanOrder'])): ?>
+                            </div><?php if(!empty($result['catatanOrder'])): ?>
                             <div class="order-note mt-2">
                                 <i class="bi bi-quote me-2"></i>
                                 <?php echo $result['catatanOrder']; ?>
@@ -301,28 +364,31 @@ $results = $order->showAllKelasByTutor($idUser);
                         
                         </div>                        <div class="col-md-3 d-flex flex-column justify-content-center align-items-center h-100">
                             <!-- Tutor Action Buttons based on order status -->
-                            <div class="d-flex flex-column justify-content-center align-items-center w-100 p-2">
-                                <?php if($result["statusOrder"] == 1): ?>
+                            <div class="d-flex flex-column justify-content-center align-items-center w-100 p-2">                                <?php if($result["statusOrder"] == 1): ?>
                                     <!-- Accept/Reject buttons for pending orders -->
                                     <div class="d-flex gap-2 mb-3 w-100">
-                                        <a href="acceptOrder.php?orderId=<?= $result['idOrder'];?>&tutorId=<?= $idUser; ?>" 
+                                        <a href="javascript:void(0);" 
+                                           onclick="confirmAcceptOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
                                            class="btn btn-success w-50 py-2">
                                             <i class="bi bi-check-circle-fill me-1"></i> Accept
                                         </a>
-                                        <a href="rejectOrder.php?orderId=<?= $result['idOrder'];?>&tutorId=<?= $idUser; ?>" 
+                                        <a href="javascript:void(0);" 
+                                           onclick="confirmRejectOrder(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
                                            class="btn btn-danger w-50 py-2">
                                             <i class="bi bi-x-circle-fill me-1"></i> Reject
                                         </a>
                                     </div>
                                 <?php elseif($result["statusOrder"] == 3): ?>
                                     <!-- Start tutoring button -->
-                                    <a href="startTutoring.php?orderId=<?= $result['idOrder'];?>&tutorId=<?= $idUser; ?>" 
+                                    <a href="javascript:void(0);" 
+                                       onclick="confirmStartTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
                                        class="btn btn-primary w-100 py-2 mb-3">
                                         <i class="bi bi-play-circle-fill me-1"></i> Start Tutoring
                                     </a>
                                 <?php elseif($result["statusOrder"] == 4): ?>
                                     <!-- Complete tutoring button -->
-                                    <a href="completeTutoring.php?orderId=<?= $result['idOrder'];?>&tutorId=<?= $idUser; ?>" 
+                                    <a href="javascript:void(0);" 
+                                       onclick="confirmCompleteTutoring(<?= $result['idOrder']; ?>, <?= $idUser; ?>)"
                                        class="btn btn-primary w-100 py-2 mb-3">
                                         <i class="bi bi-check-circle-fill me-1"></i> Complete Tutoring
                                     </a>
@@ -394,8 +460,126 @@ $results = $order->showAllKelasByTutor($idUser);
                 <p class="text-muted">You haven't received any order requests for your classes yet</p>
             </div>
         <?php endif; ?>
-    </div>
-    <div style="margin-bottom: 30px;"></div>
+    </div>    <div style="margin-bottom: 30px;"></div>
+
+    <!-- JavaScript for SweetAlert confirmations -->
+    <script>
+        // Accept Order Confirmation
+        function confirmAcceptOrder(orderId, tutorId) {
+            Swal.fire({
+                title: 'Accept Order?',
+                text: 'Are you sure you want to accept this order?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, accept it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: 'Please wait while we process your request.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Redirect to accept order page
+                    window.location.href = `acceptOrder.php?orderId=${orderId}&tutorId=${tutorId}`;
+                }
+            });
+        }
+        
+        // Reject Order Confirmation
+        function confirmRejectOrder(orderId, tutorId) {
+            Swal.fire({
+                title: 'Reject Order?',
+                text: 'Are you sure you want to reject this order?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, reject it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: 'Please wait while we process your request.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Redirect to reject order page
+                    window.location.href = `rejectOrder.php?orderId=${orderId}&tutorId=${tutorId}`;
+                }
+            });
+        }
+        
+        // Start Tutoring Confirmation
+        function confirmStartTutoring(orderId, tutorId) {
+            Swal.fire({
+                title: 'Start Tutoring?',
+                text: 'Are you ready to start the tutoring session?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, start now!',
+                cancelButtonText: 'Not yet'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: 'Please wait while we process your request.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Redirect to start tutoring page
+                    window.location.href = `startTutoring.php?orderId=${orderId}&tutorId=${tutorId}`;
+                }
+            });
+        }
+        
+        // Complete Tutoring Confirmation
+        function confirmCompleteTutoring(orderId, tutorId) {
+            Swal.fire({
+                title: 'Complete Tutoring?',
+                text: 'Are you sure you want to mark this tutoring session as complete?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, it\'s complete!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: 'Please wait while we process your request.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Redirect to complete tutoring page
+                    window.location.href = `completeTutoring.php?orderId=${orderId}&tutorId=${tutorId}`;
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

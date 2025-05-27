@@ -1,5 +1,11 @@
 <?php
 require_once "../functions.php";
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $idKelas = $_GET['classId'];
 $idUser = $_GET['id'];
 $harga = $_GET['harga'];
@@ -23,6 +29,13 @@ if(empty($orderData)) {
     echo "<script>document.location.href = 'error.php?status=orderNotFound'</script>";
     exit;
 }
+
+// Redirect to orderListLearner if order has already been processed
+if($orderData[0]['statusOrder'] > 0) {
+    echo "<script>document.location.href = 'orderListLearner.php?id=$idUser'</script>";
+    exit;
+}
+
 $orderDuration = $orderData[0]['jumlahDurasi'];
 
 function generateCode() {
@@ -38,9 +51,20 @@ function generateCode() {
 }
 
 function requestVAToBank($harga){
-    global $idOrder;
+    global $idOrder, $conn;
+    
+    // Check if a VA already exists for this order
+    $syn = "SELECT vaOrder FROM `order` WHERE idOrder = $idOrder";
+    $result = query($syn);
+    
+    if (!empty($result) && $result[0]['vaOrder'] > 0) {
+        // VA code already exists, no need to generate a new one
+        // Generate a display format from the numeric VA
+        return str_pad($result[0]['vaOrder'] % 1000000000000, 12, '0', STR_PAD_LEFT);
+    }
+    
+    // If no VA exists, generate a new one
     $vaOrder = generateCode();
-    $order = new Order();
     Order::setVA($idOrder, $vaOrder);
     return $vaOrder; // Return the generated VA code
 }
@@ -49,8 +73,17 @@ function pembayaranSelesai(){
     // Implementation for when payment is completed
 }
 
-// Generate VA and store its numeric representation in database
-$displayVA = requestVAToBank($harga);
+// Generate VA and store its numeric representation in database - only once
+$vaSessionKey = "va_code_{$idOrder}";
+
+if (!isset($_SESSION[$vaSessionKey])) {
+    // Only generate a new VA code if one doesn't exist in the session
+    $displayVA = requestVAToBank($harga);
+    $_SESSION[$vaSessionKey] = $displayVA;
+} else {
+    // Use the existing VA code from the session
+    $displayVA = $_SESSION[$vaSessionKey];
+}
 
 // Get the numeric VA from database for verification purposes
 $numericVA = Order::getVA($idOrder);
@@ -195,29 +228,37 @@ $numericVA = Order::getVA($idOrder);
 
         <div class="container-fluid text-center mb-5">
             <div class="card mx-auto" style="max-width: 500px;">
-                <div class="card-body">
-                    <h3 class="card-title montserratBold">Payment Details</h3>
-                    <div class="row py-2">
-                        <div class="col-6 text-start montserratSemiBold">Class:</div>
-                        <div class="col-6 text-end"><?php echo $kelas[0]['namaKelas']; ?></div>
-                    </div>
-                    <div class="row py-2">
-                        <div class="col-6 text-start montserratSemiBold">Price per <?php echo $kelas[0]['durasiKelas']; ?>:</div>
-                        <div class="col-6 text-end">Rp. <?php echo number_format($kelas[0]['hargaKelas'], 0, ',', '.'); ?></div>
-                    </div>                    <div class="row py-2">
-                        <div class="col-6 text-start montserratSemiBold">Duration ordered:</div>
-                        <div class="col-6 text-end">
-                            <?php echo $orderDuration; ?> <?php echo $kelas[0]['durasiKelas']; ?>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row py-2">
-                        <div class="col-6 text-start montserratBold">Total Payment:</div>
-                        <div class="col-6 text-end montserratBold">Rp. <?php echo number_format($harga, 0, ',', '.'); ?></div>
-                    </div>
+            <div class="card-body">
+                <h3 class="card-title montserratBold">Payment Details</h3>
+                <div class="row py-2">
+                <div class="col-6 text-start montserratSemiBold">Class:</div>
+                <div class="col-6 text-end"><?php echo $kelas[0]['namaKelas']; ?></div>
+                </div>
+                <div class="row py-2">
+                <div class="col-6 text-start montserratSemiBold">Price per <?php echo $kelas[0]['durasiKelas']; ?>:</div>
+                <div class="col-6 text-end">Rp. <?php echo number_format($kelas[0]['hargaKelas'], 0, ',', '.'); ?></div>
+                </div>                    
+                <div class="row py-2">
+                <div class="col-6 text-start montserratSemiBold">Duration ordered:</div>
+                <div class="col-6 text-end">
+                    <?php echo $orderDuration; ?> <?php echo $kelas[0]['durasiKelas']; ?>
+                </div>
+                </div>
+                <div class="row py-2">
+                <div class="col-6 text-start montserratSemiBold">Scheduled Time:</div>
+                <div class="col-6 text-end"><?php echo isset($orderData[0]['jadwalKelas']) ? date('l, d F Y - H:i', strtotime($orderData[0]['jadwalKelas'])) : 'Not scheduled yet'; ?></div>
+                </div>
+                <hr>
+                <div class="row py-2">
+                <div class="col-6 text-start montserratBold">Total Payment:</div>
+                <div class="col-6 text-end montserratBold">Rp. <?php echo number_format($harga, 0, ',', '.'); ?></div>
                 </div>
             </div>
-        </div>        <!-- countdown -->        <div class="container-fluid text-center">
+            </div>
+        </div>
+        
+        <!-- countdown -->        
+         <div class="container-fluid text-center">
             <h1 id="countdown" class="text-danger"></h1>
         </div>
 
@@ -250,10 +291,14 @@ $numericVA = Order::getVA($idOrder);
                                 icon: 'success',
                                 title: 'Payment Confirmed!',
                                 text: 'The tutor will be notified of your order.',
-                                confirmButtonColor: '#28a745'
-                            }).then(() => {
-                                // Redirect to order list page after user clicks OK
-                                window.location.href = "orderListLearner.php?id=<?php echo $idUser; ?>";
+                                confirmButtonColor: '#28a745',
+                                timer: 3000,  // Auto close after 3 seconds
+                                timerProgressBar: true
+                            }).then((result) => {
+                                // Redirect to order list page after user clicks OK or timer expires
+                                if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed) {
+                                    window.location.href = "orderListLearner.php?id=<?php echo $idUser; ?>";
+                                }
                             });
                         } else {                            console.error("Error updating order status: " + this.responseText);
                             Swal.fire({

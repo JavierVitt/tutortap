@@ -21,6 +21,16 @@ mysqli_stmt_bind_param($stmt, 'i', $orderId);
 $success = mysqli_stmt_execute($stmt);
 
 if ($success) {
+    // Redirect with success message
+    header("Location: orderListTutor.php?id=" . $tutorId . "&success=" . urlencode("Order has been rejected."));
+    exit;
+} else {
+    // Redirect with error message
+    header("Location: orderListTutor.php?id=" . $tutorId . "&error=" . urlencode("Failed to reject order. Please try again."));
+    exit;
+}
+
+if ($success) {
     // Redirect back to order list with rejection message
     echo "<script>
         alert('Order has been rejected!');

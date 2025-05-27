@@ -259,7 +259,28 @@ class Order{
         $row = mysqli_fetch_assoc($result);
         $idOrder = $row['id'];
         return $idOrder;
-    }    static function setVA($idOrder, $va){
+    }    static function addOrderWithSchedule($idUser, $idKelas, $durasi, $totalHarga, $jadwalKelas, $catatanOrder = ''){
+        global $conn;
+
+        // Use NULL instead of empty string for auto-increment primary key
+        // Use proper date format for tanggalOrder
+        // Use 0 for vaOrder since it's an integer column
+        $syn = "INSERT INTO `order`(`idOrder`, `idUser`, `idClass`, `tanggalOrder`, `jumlahDurasi`, `catatanOrder`, `statusOrder`, `subtotalOrder`, `vaOrder`, `jadwalKelas`) 
+                VALUES (NULL, " . $idUser . ", " . $idKelas . ", NOW(), " . $durasi . ", '" . mysqli_real_escape_string($conn, $catatanOrder) . "', 0, '" . $totalHarga . "', 0, '" . mysqli_real_escape_string($conn, $jadwalKelas) . "')";
+        
+        // Execute query with error handling
+        if (!mysqli_query($conn, $syn)) {
+            // Log the error for debugging
+            error_log("SQL Error in Order::addOrderWithSchedule: " . mysqli_error($conn));
+            error_log("SQL Query: " . $syn);
+            return 0; // Return 0 on failure
+        }
+
+        $result = mysqli_query($conn, "SELECT LAST_INSERT_ID() as id");
+        $row = mysqli_fetch_assoc($result);
+        $idOrder = $row['id'];
+        return $idOrder;
+    }static function setVA($idOrder, $va){
         global $conn;
 
         // Convert the VA code to a numeric value by using only the numeric portion
@@ -296,7 +317,7 @@ class Order{
     }    static function deleteOrder($idOrder){
         global $conn;
 
-        $syn = "DELETE FROM order WHERE idOrder = $idOrder";
+        $syn = "DELETE FROM `order` WHERE idOrder = $idOrder";
         mysqli_query($conn, $syn);
     }
     

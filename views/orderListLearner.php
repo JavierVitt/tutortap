@@ -210,8 +210,7 @@ $results = $order->showAllKelas($idUser);
                 margin-bottom: 15px;
             }
         }
-        
-        /* Order note styling */
+          /* Order note styling */
         .order-note {
             font-style: italic;
             font-size: 0.9rem;
@@ -220,6 +219,22 @@ $results = $order->showAllKelas($idUser);
             border-radius: 8px;
             border-left: 3px solid #FFCC01;
             margin-top: 8px;
+        }
+        
+        /* Schedule display styling */
+        .schedule-display {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .schedule-display:hover {
+            background-color: #fff3cd;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -267,18 +282,29 @@ $results = $order->showAllKelas($idUser);
                         
                         <!-- Class Info -->
                         <div class="col-md-5">
-                            <h5 class="fw-bold"><?php echo $hasilKelas[0]['namaKelas']; ?></h5>
-                            <div class="d-flex align-items-center mt-2">
+                            <h5 class="fw-bold"><?php echo $hasilKelas[0]['namaKelas']; ?></h5>                            <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-clock-fill me-2 text-secondary"></i>
                                 <span><?php echo $result["jumlahDurasi"]; ?> hour</span>
                             </div>
                             <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-cash-stack me-2 text-secondary"></i>
                                 <span class="fw-bold">Rp <?php echo number_format($result["subtotalOrder"], 0, ',', '.'); ?></span>
-                            </div>                            <div class="d-flex align-items-center mt-2">
+                            </div>                            <!-- Schedule/jadwalKelas display -->
+                            <?php if(isset($result['jadwalKelas']) && !empty($result['jadwalKelas'])): ?>
+                            <div class="schedule-display d-flex align-items-center">
+                                <i class="bi bi-calendar-event-fill me-2 text-primary"></i>
+                                <div>
+                                    <small class="text-muted d-block">SCHEDULED TIME:</small>
+                                    <span class="fs-6 fw-bold">
+                                        <?php echo date('D, d M Y - H:i', strtotime($result['jadwalKelas'])); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            <div class="d-flex align-items-center mt-2">
                                 <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>
                                 <span><?php echo $hasilKelas[0]['lokasiKelas']; ?></span>
-                            </div>                            <?php if(!empty($result['catatanOrder'])): ?>
+                            </div><?php if(!empty($result['catatanOrder'])): ?>
                             <div class="order-note mt-2">
                                 <i class="bi bi-quote me-2"></i>
                                 <?php echo $result['catatanOrder']; ?>
@@ -322,12 +348,12 @@ $results = $order->showAllKelas($idUser);
                                 <?php endif; ?>
                                 
                                 <!-- Complain Button -->
-                                <?php if($result["statusOrder"] >= 3 && $result["statusOrder"] < 6): ?>
+                                <!-- <?php if($result["statusOrder"] >= 3 && $result["statusOrder"] < 6): ?>
                                     <a href="complainForm.php?orderId=<?= $result['idOrder'];?>" 
                                        class="btn btn-danger btn-sm mt-3">
                                         <i class="bi bi-exclamation-triangle-fill me-1"></i> Complain
                                     </a>
-                                <?php endif; ?>
+                                <?php endif; ?> -->
                             </div>
                         </div>
                     </div>

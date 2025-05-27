@@ -2,6 +2,9 @@
     background-color: #FFCC01;
 }
 
+.bg-ouryelloww {
+    background-color: rgb(202, 184, 113);
+}
 .montserratRegular {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;

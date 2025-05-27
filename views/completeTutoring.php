@@ -20,6 +20,16 @@ mysqli_stmt_bind_param($stmt, 'i', $orderId);
 $success = mysqli_stmt_execute($stmt);
 
 if ($success) {
+    // Redirect with success message
+    header("Location: orderListTutor.php?id=" . $tutorId . "&success=" . urlencode("Tutoring session has been completed successfully!"));
+    exit;
+} else {
+    // Redirect with error message
+    header("Location: orderListTutor.php?id=" . $tutorId . "&error=" . urlencode("Failed to complete tutoring session. Please try again."));
+    exit;
+}
+
+if ($success) {
     // Get order details to calculate tutor earnings
     $orderQuery = "SELECT o.*, k.userId AS tutorId, k.hargaKelas 
                    FROM `order` o 

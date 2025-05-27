@@ -266,16 +266,16 @@ try {
 
     // Seed order table
     $orders = [
-        ["801", "1002", "101", "2024-06-01 09:30:00", "2", "Need help with integration techniques", "1", "300000", "12345678"],
-        ["802", "1003", "102", "2024-06-02 14:15:00", "1", "Focus on business English please", "2", "120000", "23456789"],
-        ["803", "1004", "103", "2024-06-03 10:00:00", "3", "Beginner with no programming experience", "1", "600000", "34567890"],
-        ["804", "1005", "104", "2024-06-04 16:45:00", "2", "Preparing for university entrance exam", "2", "360000", "45678901"],
-        ["805", "1001", "105", "2024-06-05 13:30:00", "1", "Need to understand Newtons laws better", "1", "160000", "56789012"]
+        ["801", "1002", "101", "2024-06-01 09:30:00", "2", "Need help with integration techniques", "1", "300000", "12345678", "2024-06-10 14:00:00"],
+        ["802", "1003", "102", "2024-06-02 14:15:00", "1", "Focus on business English please", "2", "120000", "23456789", "2024-06-12 16:30:00"],
+        ["803", "1004", "103", "2024-06-03 10:00:00", "3", "Beginner with no programming experience", "1", "600000", "34567890", "2024-06-15 09:00:00"],
+        ["804", "1005", "104", "2024-06-04 16:45:00", "2", "Preparing for university entrance exam", "2", "360000", "45678901", "2024-06-18 13:45:00"],
+        ["805", "1001", "105", "2024-06-05 13:30:00", "1", "Need to understand Newtons laws better", "1", "160000", "56789012", "2024-06-20 10:15:00"]
     ];
 
     foreach ($orders as $order) {
-        $query = "INSERT INTO `order` (idOrder, idUser, idClass, tanggalOrder, jumlahDurasi, catatanOrder, statusOrder, subtotalOrder, vaOrder) 
-                  VALUES ('$order[0]', '$order[1]', '$order[2]', '$order[3]', '$order[4]', '$order[5]', '$order[6]', '$order[7]', '$order[8]')";
+        $query = "INSERT INTO `order` (idOrder, idUser, idClass, tanggalOrder, jumlahDurasi, catatanOrder, statusOrder, subtotalOrder, vaOrder, jadwalKelas) 
+                  VALUES ('$order[0]', '$order[1]', '$order[2]', '$order[3]', '$order[4]', '$order[5]', '$order[6]', '$order[7]', '$order[8]', '$order[9]')";
         executeQuery($conn, $query);
     }
     echo "Orders seeded.\n";
