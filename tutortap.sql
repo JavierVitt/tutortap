@@ -126,7 +126,7 @@ CREATE TABLE `order` (
   `idUser` int(16) NOT NULL,
   `idClass` int(16) NOT NULL,
   `tanggalOrder` datetime NOT NULL,
-  'jadwalKelas' datetime NOT NULL,
+  `jadwalKelas` datetime NOT NULL,
   `jumlahDurasi` int(255) NOT NULL,
   `catatanOrder` varchar(1024) NOT NULL,
   `statusOrder` int(5) NOT NULL,
@@ -399,4 +399,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-tutortaptutortaptutortaptutortaptutortap
