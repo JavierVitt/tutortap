@@ -632,6 +632,56 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script>
+
+// Update the clear filters button event listener in the modal
+document.addEventListener('DOMContentLoaded', function() {
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            // Reset all filter fields in the modal for visual feedback
+            document.getElementById('locationSelect').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('rating').value = '';
+            
+            // Get the current URL and preserve only the id parameter and search term
+            const currentUrl = new URL(window.location.href);
+            const id = currentUrl.searchParams.get('id');
+            const search = currentUrl.searchParams.get('search');
+            
+            // Create a new URL with only the id parameter
+            let newUrl = `${currentUrl.pathname}?id=${id}`;
+            
+            // Add search parameter if it exists
+            if (search) {
+                newUrl += `&search=${encodeURIComponent(search)}`;
+            }
+            
+            // Redirect to the new URL
+            window.location.href = newUrl;
+        });
+    }
+});
+// Add event listener for Enter key in the filter modal
+document.addEventListener('DOMContentLoaded', function() {
+    // Get reference to the filter form
+    const filterForm = document.getElementById('filterForm');
+    
+    if (filterForm) {
+        // Add keypress event listener to the form
+        filterForm.addEventListener('keypress', function(event) {
+            // Check if Enter key was pressed (key code 13)
+            if (event.key === 'Enter') {
+                // Prevent default form submission
+                event.preventDefault();
+                
+                // Manually submit the form (same as clicking Apply Filters button)
+                document.getElementById('filterForm').submit();
+            }
+        });
+    }
+});
+
     // Wait for the document to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // Get references to the search form and button

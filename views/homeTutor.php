@@ -130,7 +130,7 @@ $saldo = $user->getSaldo($idUser);
                     </a>                
                 </div> -->
                 <div class="container col-3">
-                    <a href="orderListLearner.php?id=<?php echo $id; ?>">
+                    <a href="orderListTutor.php?id=<?php echo $idUser; ?>">
                         <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
