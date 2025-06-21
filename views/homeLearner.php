@@ -298,6 +298,41 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
             
         </div>
     </div>
+
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="breadcrumb" class="container-fluid px-5 py-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="homeLearner.php?id=<?=$id?>" class="text-decoration-none">Home</a></li>
+                <?php if(!empty($searchTerm)): ?>
+                    <li class="breadcrumb-item active" aria-current="page">Search: "<?php echo $searchTerm; ?>"</li>
+                <?php else: ?>
+                    <li class="breadcrumb-item active" aria-current="page">Browse Classes</li>
+                <?php endif; ?>
+                
+                <?php if(isset($_GET['location']) && !empty($_GET['location'])): ?>
+                    <li class="breadcrumb-item active" aria-current="page">Location: <?php echo htmlspecialchars($_GET['location']); ?></li>
+                <?php endif; ?>
+                
+                <?php if((isset($_GET['minPrice']) && $_GET['minPrice'] !== '') || (isset($_GET['maxPrice']) && $_GET['maxPrice'] !== '')): ?>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Price: 
+                        <?php if(isset($_GET['minPrice']) && $_GET['minPrice'] !== ''): ?>
+                            Rp<?php echo number_format($_GET['minPrice']); ?>
+                        <?php endif; ?>
+                        <?php if(isset($_GET['minPrice']) && $_GET['minPrice'] !== '' && isset($_GET['maxPrice']) && $_GET['maxPrice'] !== ''): ?>
+                            - 
+                        <?php endif; ?>
+                        <?php if(isset($_GET['maxPrice']) && $_GET['maxPrice'] !== ''): ?>
+                            Rp<?php echo number_format($_GET['maxPrice']); ?>
+                        <?php endif; ?>
+                    </li>
+                <?php endif; ?>
+                
+                <?php if(isset($_GET['rating']) && $_GET['rating'] !== ''): ?>
+                    <li class="breadcrumb-item active" aria-current="page">Rating: <?php echo $_GET['rating']; ?>+ Stars</li>
+                <?php endif; ?>
+            </ol>
+        </nav>
         
         <div class="container-fluid text-center montserratBold ">
             <h1 class="montserratBold">

@@ -216,6 +216,15 @@ $numericVA = Order::getVA($idOrder);
             </div>
         </div>
     </div>
+        <nav aria-label="breadcrumb" class="container-fluid px-5 mt-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page">Browse Classes</li>
+                <li class="breadcrumb-item" aria-current="page"><?php echo $kelas[0]['namaKelas']; ?></li>
+                <li class="breadcrumb-item active" aria-current="page">Payment</li>
+                <li class="breadcrumb-item active" aria-current="page">BCA</li>
+            </ol>
+        </nav>
         <div class="container-fluid text-center mt-5 montserratBold ">
             <h1 class="montserratBold pb-3">Pembayaran BCA</h1>
         </div>

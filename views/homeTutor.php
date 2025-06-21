@@ -130,7 +130,7 @@ $saldo = $user->getSaldo($idUser);
                     </a>                
                 </div> -->
                 <div class="container col-3">
-                    <a href="orderListLearner.php?id=<?php echo $id; ?>">
+                    <a href="orderListTutor.php?id=<?php echo $idUser; ?>">
                         <i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
                     </a>
                 </div>
@@ -142,6 +142,13 @@ $saldo = $user->getSaldo($idUser);
             </div>
         </div>
     </div>
+
+    <nav aria-label="breadcrumb" class="container-fluid px-5 mt-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tutor Dashboard</li>
+        </ol>
+    </nav>
 
     <div class="containter-fluid d-flex justify-content-center align-items-center my-4">
         <div class="container mx-5 rounded-4 montserratBold" style="height:10%; width:50%; background-color: rgb(200,200,200)">

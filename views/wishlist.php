@@ -280,6 +280,12 @@ if(isset($_GET['rating']) && $_GET['rating'] !== '') {
             </div>
             
         </div>
+    <nav aria-label="breadcrumb" class="container-fluid px-5 mt-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active" aria-current="page">My Wishlist</li>
+        </ol>
+    </nav>
     </div>
           <div class="container-fluid text-center montserratBold ">
             <h1 class="montserratBold">

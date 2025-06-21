@@ -154,10 +154,11 @@ function validasiPesanan(){
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     </head>
-
+    
     <body>
         <div class="navbar w-100 bg-ouryellow ">
         <div class="container-fluid d-flex justify-content-between">
+            
             <div class="container w-25 d-flex justify-content-center">
                 <a href="homeLearner.php?id=<?php echo $idUser; ?>">
                     <img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:200px; background-color:black" alt="">
@@ -193,9 +194,18 @@ function validasiPesanan(){
                 </div>
             </div>
         </div>
-    </div>        <div class="container-fluid text-center mt-5 montserratBold ">
-            <h1 class="montserratBold pb-3">Pilih Metode Pembayaran</h1>
-        </div>
+    </div>             
+    <nav aria-label="breadcrumb" class="container-fluid px-5 mt-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item" aria-current="page">Browse Classes</li>
+            <li class="breadcrumb-item" aria-current="page"><?php echo $kelas[0]['namaKelas']; ?></li>
+            <li class="breadcrumb-item active" aria-current="page">Payment</li>
+        </ol>
+    </nav>
+    <div class="container-fluid text-center mt-5 montserratBold ">
+        <h1 class="montserratBold pb-3">Pilih Metode Pembayaran</h1>
+    </div>
 
         <div class="container-fluid text-center mb-5">
             <div class="card mx-auto" style="max-width: 500px;">

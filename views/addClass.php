@@ -505,9 +505,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 		</div>
 	</div>
 
+	
+
 	<div id="booking" class="section">
 		<div class="section-center">
 			<div class="container-fluid px-2 px-md-4">
+			<nav aria-label="breadcrumb" class="container-fluid px-5 mt-3">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="">Home</a></li>
+					<li class="breadcrumb-item" aria-current="page"><a href="#">Tutor Dashboard</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Add Class</li>
+				</ol>
+			</nav>
 				<div class="row justify-content-center">
 					<div class="col-12">
 						<div class="form-header text-center mb-4">
