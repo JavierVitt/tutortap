@@ -4,44 +4,45 @@ require_once "../functions.php";
 // Check if user is logged in
 session_start();
 if (!isset($_GET['id'])) {
-    // Redirect to login page if not logged in
-    echo "<script>document.location.href = 'login.php'</script>";
-    exit;
+	// Redirect to login page if not logged in
+	echo "<script>document.location.href = 'login.php'</script>";
+	exit;
 }
 
 $userId = $_GET['id'];
-
+$id = $userId;
 // Function to upload class image
-function uploadClassImage() {
-    $targetDir = "../images/";
-    $fileName = basename($_FILES["classImage"]["name"]);
-    $imageFileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    
-    // Generate unique filename
-    $newFileName = uniqid() . '.' . $imageFileType;
-    $targetFilePath = $targetDir . $newFileName;
-    
-    // Check if file is an actual image
-    $check = getimagesize($_FILES["classImage"]["tmp_name"]);
-    if ($check === false) {
-        return false;
-    }
-      // Check file size (limit to 5MB)
-    if ($_FILES["classImage"]["size"] > 5000000) {
-        return false;
-    }
-    
-    // Allow certain file formats
-    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" && $imageFileType != "webp") {
-        return false;
-    }
-    
-    // Upload file
-    if (move_uploaded_file($_FILES["classImage"]["tmp_name"], $targetFilePath)) {
-        return $newFileName;
-    } else {
-        return false;
-    }
+function uploadClassImage()
+{
+	$targetDir = "../images/";
+	$fileName = basename($_FILES["classImage"]["name"]);
+	$imageFileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+	// Generate unique filename
+	$newFileName = uniqid() . '.' . $imageFileType;
+	$targetFilePath = $targetDir . $newFileName;
+
+	// Check if file is an actual image
+	$check = getimagesize($_FILES["classImage"]["tmp_name"]);
+	if ($check === false) {
+		return false;
+	}
+	// Check file size (limit to 5MB)
+	if ($_FILES["classImage"]["size"] > 5000000) {
+		return false;
+	}
+
+	// Allow certain file formats
+	if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" && $imageFileType != "webp") {
+		return false;
+	}
+
+	// Upload file
+	if (move_uploaded_file($_FILES["classImage"]["tmp_name"], $targetFilePath)) {
+		return $newFileName;
+	} else {
+		return false;
+	}
 }
 
 // Process form submission
@@ -49,36 +50,36 @@ $successMessage = "";
 $errorMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
-    // Validate input
-    $classTitle = htmlspecialchars($_POST['classTitle']);
-    $classPrice = (int)$_POST['classPrice'];
-    $classDuration = $_POST['classDuration'];
-    $classDescription = htmlspecialchars($_POST['classDescription']);
-    $lokasiKelas = htmlspecialchars($_POST['lokasiKelas']);
-    
-    // Validate required fields
-    if (empty($classTitle) || empty($classPrice) || empty($classDescription) || empty($lokasiKelas)) {
-        $errorMessage = "All fields are required!";
-    } else {
-        // Process image upload
-        if (isset($_FILES["classImage"]) && $_FILES["classImage"]["error"] == 0) {
-            $classImage = uploadClassImage();
-            if ($classImage) {
-                // Insert class into database
-                global $conn;
-                
-                // Status 1 means the class is active/approved
-                $statusKelas = 1;
-                  $query = "INSERT INTO kelas (userId, namaKelas, hargaKelas, durasiKelas, statusKelas, deskripsiKelas, fotoKelas, lokasiKelas) 
+	// Validate input
+	$classTitle = htmlspecialchars($_POST['classTitle']);
+	$classPrice = (int)$_POST['classPrice'];
+	$classDuration = $_POST['classDuration'];
+	$classDescription = htmlspecialchars($_POST['classDescription']);
+	$lokasiKelas = htmlspecialchars($_POST['lokasiKelas']);
+
+	// Validate required fields
+	if (empty($classTitle) || empty($classPrice) || empty($classDescription) || empty($lokasiKelas)) {
+		$errorMessage = "All fields are required!";
+	} else {
+		// Process image upload
+		if (isset($_FILES["classImage"]) && $_FILES["classImage"]["error"] == 0) {
+			$classImage = uploadClassImage();
+			if ($classImage) {
+				// Insert class into database
+				global $conn;
+
+				// Status 1 means the class is active/approved
+				$statusKelas = 1;
+				$query = "INSERT INTO kelas (userId, namaKelas, hargaKelas, durasiKelas, statusKelas, deskripsiKelas, fotoKelas, lokasiKelas) 
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                          
-                $stmt = mysqli_prepare($conn, $query);
-                mysqli_stmt_bind_param($stmt, "isisisss", $userId, $classTitle, $classPrice, $classDuration, $statusKelas, $classDescription, $classImage, $lokasiKelas);
-                
-                if (mysqli_stmt_execute($stmt)) {
-                    $successMessage = "Class added successfully!";
-                    // Redirect to tutor home page after successful class creation
-                    echo "<script>
+
+				$stmt = mysqli_prepare($conn, $query);
+				mysqli_stmt_bind_param($stmt, "isisisss", $userId, $classTitle, $classPrice, $classDuration, $statusKelas, $classDescription, $classImage, $lokasiKelas);
+
+				if (mysqli_stmt_execute($stmt)) {
+					$successMessage = "Class added successfully!";
+					// Redirect to tutor home page after successful class creation
+					echo "<script>
                         document.addEventListener('DOMContentLoaded', function () {
                             Swal.fire({
                                 icon: 'success',
@@ -90,16 +91,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
                             });
                         });
                     </script>";
-                } else {
-                    $errorMessage = "Error adding class: " . mysqli_error($conn);
-                }
-            } else {
-                $errorMessage = "Failed to upload image. Please ensure it's a valid image file (JPG, PNG, JPEG, GIF, WEBP) and under 5MB.";
-            }
-        } else {
-            $errorMessage = "Please select an image for your class.";
-        }
-    }
+				} else {
+					$errorMessage = "Error adding class: " . mysqli_error($conn);
+				}
+			} else {
+				$errorMessage = "Failed to upload image. Please ensure it's a valid image file (JPG, PNG, JPEG, GIF, WEBP) and under 5MB.";
+			}
+		} else {
+			$errorMessage = "Please select an image for your class.";
+		}
+	}
+}
+
+// Helper function to remove a parameter from the current URL
+function removeParameterFromCurrentUrl($paramToRemove)
+{
+	$params = $_GET;
+	unset($params[$paramToRemove]);
+
+	return '?' . http_build_query($params);
+}
+
+// Helper function to remove multiple parameters from the current URL
+function removeParametersFromCurrentUrl($paramsToRemove)
+{
+	$params = $_GET;
+
+	foreach ($paramsToRemove as $param) {
+		unset($params[$param]);
+	}
+
+	return '?' . http_build_query($params);
 }
 ?>
 
@@ -113,10 +135,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 	<!-- The above meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 	<title>Add Class - TutorTap</title>
-	
+
 	<!-- Favicon-->
 	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-	
+
 	<!-- Google font -->
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
 
@@ -126,21 +148,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 	<!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
 
 	<!-- Core theme CSS (includes Bootstrap)-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="../styles/styles.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
-    <!-- SweetAlert2 for nice alerts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+	<link href="../styles/styles.css" rel="stylesheet" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+	<!-- SweetAlert2 for nice alerts -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -225,7 +247,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			margin: 0px;
 		}
 
-		.booking-form > form {
+		.booking-form>form {
 			background-color: #101113;
 			padding: 30px 20px;
 			border-radius: 8px;
@@ -270,7 +292,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			appearance: none;
 		}
 
-		.booking-form select.form-control + .select-arrow {
+		.booking-form select.form-control+.select-arrow {
 			position: absolute;
 			right: 0px;
 			bottom: 6px;
@@ -283,7 +305,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			font-size: 14px;
 		}
 
-		.booking-form select.form-control + .select-arrow:after {
+		.booking-form select.form-control+.select-arrow:after {
 			content: '\279C';
 			display: block;
 			-webkit-transform: rotate(90deg);
@@ -320,7 +342,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			margin-bottom: 20px;
 			border-radius: 10px;
 			overflow: hidden;
-			box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 		}
 
 		.class-image-preview img {
@@ -342,7 +364,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 		}
 
 		.form-header h1 {
-			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 		}
 
 		body {
@@ -370,7 +392,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			margin: 0 auto;
 			transition: all 0.3s ease;
 			transform: scale(0.95);
-			box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 		}
 
 		.card-preview:hover {
@@ -392,30 +414,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 				max-width: 1400px;
 				margin: 0 auto;
 			}
-			
+
 			.side-by-side {
 				display: flex !important;
 				flex-wrap: nowrap !important;
 				gap: 20px;
 			}
-			
+
 			.form-column {
 				flex: 0 0 58% !important;
 				max-width: 58% !important;
 			}
-			
+
 			.preview-column {
 				flex: 0 0 38% !important;
 				max-width: 38% !important;
 			}
-			
+
 			.preview-sticky {
 				position: sticky;
 				top: 20px;
 				max-height: calc(100vh - 40px);
 				overflow-y: auto;
 			}
-			
+
 			.booking-form {
 				height: auto;
 			}
@@ -428,33 +450,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 				width: 100%;
 				margin: 0 auto 20px;
 			}
-			
+
 			.booking-form .form-header h1 {
 				font-size: 32px;
 			}
-			
+
 			#booking {
 				padding-top: 20px;
 			}
-			
+
 			.section {
 				padding: 20px 0;
 			}
-			
+
 			.preview-container {
 				margin-top: 30px !important;
 				margin-bottom: 30px;
 				padding: 15px;
 			}
-			
+
 			.card-preview {
 				max-width: 280px;
 			}
-			
+
 			.side-by-side {
 				display: block !important;
 			}
-			
+
 			.form-column,
 			.preview-column {
 				width: 100% !important;
@@ -468,42 +490,177 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 			.booking-form {
 				padding: 0 8px;
 			}
-			
+
 			.booking-form .form-header h1 {
 				font-size: 28px;
 			}
-			
-			.booking-form > form {
+
+			.booking-form>form {
 				padding: 20px 15px;
 			}
-			
+
 			#booking {
 				padding: 10px 0 30px;
 			}
-			
+
 			.section {
 				padding: 10px 0;
 			}
+		}
+
+		.card-container {
+			position: relative;
+			transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			cursor: pointer;
+			transform-origin: center;
+		}
+
+		.card-container:hover .card {
+			opacity: 1;
+			transform: scale(1.05);
+			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		.card-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			opacity: 0;
+			transition: all 0.3s ease-in-out;
+			z-index: 10;
+			pointer-events: none;
+		}
+
+		.card-container:hover .card-overlay {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.card {
+			transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
+
+		/* Search highlighting styles */
+		mark.bg-warning {
+			padding: 0.1rem 0.2rem;
+			border-radius: 3px;
+		}
+
+		mark.bg-light {
+			padding: 0.05rem;
+			border-radius: 2px;
+			background-color: rgba(255, 204, 1, 0.2) !important;
+			color: inherit;
+		}
+
+		/* Search results animation */
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.search-result-item {
+			animation: fadeIn 0.3s ease-in-out forwards;
+		}
+
+		/* Wishlist button styles */
+		.wishlist-btn {
+			opacity: 0.9;
+			transition: all 0.2s ease-in-out;
+		}
+
+		.wishlist-btn:hover {
+			opacity: 1;
+			transform: scale(1.1);
+		}
+
+		.wishlist-btn .btn {
+			transition: all 0.2s ease;
+			background-color: white !important;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.wishlist-btn:hover .btn {
+			background-color: white !important;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+		}
+
+		/* Filter button styles */
+		#filterButton {
+			position: relative;
+			transition: all 0.2s ease;
+		}
+
+		#filterButton.active::after {
+			content: '';
+			position: absolute;
+			bottom: 3px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 8px;
+			height: 8px;
+			background-color: #FFCC01;
+			border-radius: 50%;
+		}
+
+		/* Filter modal custom styles */
+		.bg-ouryellow {
+			background-color: #FFCC01 !important;
 		}
 	</style>
 </head>
 
 <body>
-	<div class="navbar navbar-expand-lg navbar-light bg-ouryellow">
-		<div class="container-fluid">
-			<!-- Logo -->
-			<a class="navbar-brand" href="homeTutor.php?id=<?php echo $userId; ?>">
-				<img src="../images/skilltap logo+brand.png" class="rounded-pill" style="width:150px; background-color:black" alt="">
-			</a>
-			<!-- Navigation Icons -->
-			<div class="navbar-nav ms-auto">
-				<a class="btn-icon me-3" href="#"><i class="bi bi-envelope-fill text-dark" style="font-size: 25px;"></i></a>
-				<a class="btn-icon me-3" href="homeTutor.php?id=<?php echo $userId; ?>"><i class="bi bi-house-fill text-dark" style="font-size: 25px;"></i></a>
-				<a class="btn-icon me-3" href="#"><i class="bi bi-cart-fill text-dark" style="font-size: 25px;"></i></a>
-				<a class="btn-icon me-3" href="logout.php" title="Logout"><i class="bi bi-box-arrow-right text-dark" style="font-size: 25px;"></i></a>
+
+	<body class="montserratRegular">
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		<div class="navbar w-100">
+			<div class="container-fluid row pe-4">
+				<div class="col-auto float-start ps-0">
+					<a href="homeTutor.php?id=<?= $id ?>">
+						<img src="../images/skilltap brand.png" class="rounded-pill" style="width:200px;" alt="">
+					</a>
+				</div>
+
+				<div class="col-2 row justify-content-center align-items-center" style="color:black;">
+
+					<!-- Wishlist Button -->
+					<div class="col-auto">
+						<a href="wishlist.php?id=<?php echo $id; ?>">
+							<i class="bi bi-heart-fill text-dark" style="font-size: 30px;"></i>
+						</a>
+					</div>
+
+					<div class="col-auto">
+						<a href="orderListTutor.php?id=<?php echo $id; ?>">
+							<i class="bi bi-cart-fill text-dark" style="font-size: 30px;"></i>
+						</a>
+					</div>
+
+					<div class="col-auto">
+						<a href="logout.php" title="Logout">
+							<i class="bi bi-box-arrow-right text-dark" style="font-size: 30px;"></i>
+						</a>
+					</div>
+				</div>
+
 			</div>
 		</div>
-	</div>
+	</body>
 
 	
 
@@ -522,21 +679,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 						<div class="form-header text-center mb-4">
 							<h1>Add Class</h1>
 						</div>
-						
+
 						<?php if (!empty($errorMessage)): ?>
-						<div class="alert alert-danger" role="alert">
-							<?php echo $errorMessage; ?>
-						</div>
+							<div class="alert alert-danger" role="alert">
+								<?php echo $errorMessage; ?>
+							</div>
 						<?php endif; ?>
-						
+
 						<?php if (!empty($successMessage)): ?>
-						<div class="alert alert-success" role="alert">
-							<?php echo $successMessage; ?>
-						</div>
+							<div class="alert alert-success" role="alert">
+								<?php echo $successMessage; ?>
+							</div>
 						<?php endif; ?>
 					</div>
 				</div>
-				
+
 				<div class="row side-by-side mx-0 mt-0">
 					<!-- Form Column (Left Side) -->
 					<div class="form-column">
@@ -545,7 +702,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 								<div class="form-group">
 									<span class="form-label">Title</span>
 									<input class="form-control" type="text" name="classTitle" id="classTitle" placeholder="Add your Class Title Here" required>
-								</div>								<div class="form-group">
+								</div>
+								<div class="form-group">
 									<span class="form-label">Image</span>
 									<input class="form-control" type="file" name="classImage" id="classImage" accept="image/jpeg,image/png,image/gif,image/webp" required>
 									<small class="form-text text-white">Supported formats: JPG, PNG, JPEG, GIF, WEBP (max 5MB)</small>
@@ -592,7 +750,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 							</form>
 						</div>
 					</div>
-					
+
 					<!-- Preview Column (Right Side) -->
 					<div class="preview-column">
 						<div class="preview-container preview-sticky" style="margin-top:0 !important; height: auto;">
@@ -621,62 +779,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['saveClass'])) {
 	</div>
 
 	<script>
-	// Real-time preview update functionality
-	document.addEventListener('DOMContentLoaded', function() {
-		// Get form elements
-		const titleInput = document.getElementById('classTitle');
-		const priceInput = document.getElementById('classPrice');
-		const durationSelect = document.getElementById('classDuration');
-		const descriptionTextarea = document.getElementById('classDescription');
-		const imageInput = document.getElementById('classImage');
-		
-		// Get preview elements
-		const previewTitle = document.getElementById('previewTitle');
-		const previewPrice = document.getElementById('previewPrice');
-		const previewDescription = document.getElementById('previewDescription');
-		const previewImage = document.getElementById('previewImage');
-		
-		// Update title
-		if (titleInput && previewTitle) {
-			titleInput.addEventListener('input', function() {
-				previewTitle.textContent = this.value || 'Class Title';
-			});
-		}
-		
-		// Update price and duration
-		if (priceInput && durationSelect && previewPrice) {
-			const updatePrice = function() {
-				const price = priceInput.value || '0';
-				const duration = durationSelect.value || '/hour';
-				previewPrice.textContent = 'Rp.' + price + "/" + duration;
-			};
-			
-			priceInput.addEventListener('input', updatePrice);
-			durationSelect.addEventListener('change', updatePrice);
-		}
-		
-		// Update description
-		if (descriptionTextarea && previewDescription) {
-			descriptionTextarea.addEventListener('input', function() {
-				previewDescription.textContent = this.value || 'Class description will appear here';
-			});
-		}
-		
-		// Update image (preview)
-		if (imageInput && previewImage) {
-			imageInput.addEventListener('change', function() {
-				if (this.files && this.files[0]) {
-					const reader = new FileReader();
-					
-					reader.onload = function(e) {
-						previewImage.src = e.target.result;
-					};
-					
-					reader.readAsDataURL(this.files[0]);
-				}
-			});
-		}
-	});
+		// Real-time preview update functionality
+		document.addEventListener('DOMContentLoaded', function() {
+			// Get form elements
+			const titleInput = document.getElementById('classTitle');
+			const priceInput = document.getElementById('classPrice');
+			const durationSelect = document.getElementById('classDuration');
+			const descriptionTextarea = document.getElementById('classDescription');
+			const imageInput = document.getElementById('classImage');
+
+			// Get preview elements
+			const previewTitle = document.getElementById('previewTitle');
+			const previewPrice = document.getElementById('previewPrice');
+			const previewDescription = document.getElementById('previewDescription');
+			const previewImage = document.getElementById('previewImage');
+
+			// Update title
+			if (titleInput && previewTitle) {
+				titleInput.addEventListener('input', function() {
+					previewTitle.textContent = this.value || 'Class Title';
+				});
+			}
+
+			// Update price and duration
+			if (priceInput && durationSelect && previewPrice) {
+				const updatePrice = function() {
+					const price = priceInput.value || '0';
+					const duration = durationSelect.value || '/hour';
+					previewPrice.textContent = 'Rp.' + price + "/" + duration;
+				};
+
+				priceInput.addEventListener('input', updatePrice);
+				durationSelect.addEventListener('change', updatePrice);
+			}
+
+			// Update description
+			if (descriptionTextarea && previewDescription) {
+				descriptionTextarea.addEventListener('input', function() {
+					previewDescription.textContent = this.value || 'Class description will appear here';
+				});
+			}
+
+			// Update image (preview)
+			if (imageInput && previewImage) {
+				imageInput.addEventListener('change', function() {
+					if (this.files && this.files[0]) {
+						const reader = new FileReader();
+
+						reader.onload = function(e) {
+							previewImage.src = e.target.result;
+						};
+
+						reader.readAsDataURL(this.files[0]);
+					}
+				});
+			}
+		});
 	</script>
 </body>
 
